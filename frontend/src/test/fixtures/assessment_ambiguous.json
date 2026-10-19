@@ -1,0 +1,51 @@
+{
+ "id": "1da48b36-ee81-4b33-bfaa-d9386b79c301",
+ "cr_id": "42a2ffd1-32dd-4fbc-bc01-31daae3901fd",
+ "parent_assessment_id": null,
+ "status": "needs_clarification",
+ "overall_conclusion": "Needs Review",
+ "risk_score": null,
+ "warnings": [
+  "missing_regulations: EMIR, UKEMIR, ASIC, MAS, HKMA",
+  "model_marked_cr_ambiguous: clarification needed before relying on this assessment"
+ ],
+ "disclaimer": "AI-generated: Requires Human Review",
+ "change_request": {
+  "text": "Please make the report better somehow",
+  "source_type": "text",
+  "original_filename": null
+ },
+ "model": {
+  "mode": "mock",
+  "label": "impart-model",
+  "latency_ms": 0,
+  "disclaimer": "AI-generated output. Requires human review."
+ },
+ "cr_metadata": {
+  "is_ambiguous": true,
+  "clarification_prompt": "Which field should change?",
+  "summary": "Update the event timestamp reporting field to capture the precise date and time of lifecycle events.",
+  "requirements": [
+   {
+    "id": "R1",
+    "kind": "field",
+    "concept": "Lifecycle Event Timestamp",
+    "requirement": "The technical specification must define an event timestamp field that supports capturing the exact date and time of a lifecycle event.",
+    "required_max_length": null,
+    "search_queries": [
+     "event timestamp lifecycle event date time format",
+     "lifecycle event exact timestamp reporting requirements"
+    ]
+   }
+  ]
+ },
+ "clarification_prompt": "Which field should change?",
+ "source_discrepancies": [],
+ "chain_of_thought_explanation": "EMIR: [R1=FAIL] EMIR provides the Event date field to record when a reportable lifecycle event occurred. However, the field's data format is strictly date-only (YYYY-MM-DD), directly conflicting with the requirement to capture an exact date and time timestamp for the lifecycle event.\nUKEMIR: [R1=FAIL] UK EMIR captures the timing of reportable lifecycle events using the 'Event date' field (field 2.153). However, the technical specification mandates an ISO 8601 date-only format (YYYY-MM-DD) without time information. Because the requirement requires capturing the exact date and time of the event, there is a concrete conflict between the required timestamp and the date-only specification.\nASIC: [R1=OK] ASIC defines the field 'Event timestamp' to capture the date and time of an event occurrence. The field format is ISO 8601 UTC date-time (YYYY-MM-DDThh:mm:ssZ), accommodating the exact date and time of lifecycle events.\nMAS: [R1=OK] MAS defines the field 'Event date (where applicable)' with an ISO 8601 date-time format (YYYY-MM-DDTHH:MM:SSZ). The regulatory guidelines confirm that this field records the exact date and time of occurrence of the event. Therefore, the specification accommodates capturing the exact date and time of a lifecycle event without conflict.\nHKMA: [R1=OK] HKMA defines the 'Event timestamp' field to capture the date and time of the occurrence of a lifecycle event. For trade updates, the field specifically requires the ISO 8601 UTC date-time format YYYY-MM-DDThh:mm:ssZ, satisfying the requirement to record the exact date and time.",
+ "compliance_table": [],
+ "conflict_heatmap": {},
+ "spectrum_of_complexity": [],
+ "error": null,
+ "created_at": "2026-10-10T22:50:54.567832+00:00",
+ "completed_at": "2026-10-10T22:50:54.568296+00:00"
+}

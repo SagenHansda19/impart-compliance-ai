@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+requests
+psycopg2-binary
+pandas
+openpyxl
+pypdf
+sentence-transformers

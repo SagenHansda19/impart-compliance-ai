@@ -1,0 +1,7 @@
+__pycache__/
+backend/__pycache__/
+.env
+v2/.llm_cache/
+backend/.llm_cache/
+.venv/
+eval_results.json

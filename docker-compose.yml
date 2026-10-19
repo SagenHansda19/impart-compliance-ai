@@ -1,0 +1,96 @@
+# Everything with one command:   docker compose up --build      then open http://localhost:8000
+services:
+  db:
+    image: mysql:8.4
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: impart
+      MYSQL_USER: impart
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-impart}
+    volumes: [mysqldata:/var/lib/mysql]
+    healthcheck:   # a real login over TCP, so it only passes after first-time set-up has finished
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uimpart -p$$MYSQL_PASSWORD --silent"]
+      interval: 4s
+      timeout: 5s
+      retries: 40
+
+  backend:
+    build: ./backend
+    depends_on:
+      db: {condition: service_healthy}
+    ports: ["127.0.0.1:8080:8080"]   # optional: API docs at http://localhost:8080/docs
+    environment:
+      DATABASE_URL: mysql+pymysql://impart:${MYSQL_PASSWORD:-impart}@db:3306/impart?charset=utf8mb4
+      MODEL_MODE: ${MODEL_MODE:-mock}
+      MODEL_URL: ${MODEL_URL:-http://model:8000/api/evaluate}
+      MODEL_REQUEST_FIELD: ${MODEL_REQUEST_FIELD:-cr_text}
+      MODEL_RETRIES: ${MODEL_RETRIES:-1}
+      MODEL_API_KEY: ${MODEL_API_KEY:-}
+      MODEL_LABEL: ${MODEL_LABEL:-impart-model}
+      MODEL_TIMEOUT_S: ${MODEL_TIMEOUT_S:-180}
+      API_KEY: ${API_KEY:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8000}
+    extra_hosts: ["host.docker.internal:host-gateway"]   # reach a model running on your own computer
+    restart: unless-stopped
+
+  # ---- the real engine (knowledge base + model service). Start with:  docker compose --profile engine up --build
+  kb:
+    profiles: ["engine"]
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${KB_PASSWORD:-mysecretpassword}
+      POSTGRES_DB: impart_db
+    volumes: [kbdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d impart_db"]
+      interval: 4s
+      timeout: 5s
+      retries: 30
+
+  model:
+    profiles: ["engine"]
+    build: ./model
+    depends_on:
+      kb: {condition: service_healthy}
+    ports: ["127.0.0.1:8001:8000"]   # optional: model API docs at http://localhost:8001/docs
+    environment: &model_env
+      DB_URL: postgresql://admin:${KB_PASSWORD:-mysecretpassword}@kb:5432/impart_db
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
+      JUDGE_MODEL: ${JUDGE_MODEL:-}
+      EXTRACT_MODEL: ${EXTRACT_MODEL:-}
+      N_VOTES: ${N_VOTES:-1}
+      MAPPING_MODE: ${MAPPING_MODE:-lexical}
+      NO_CACHE: ${NO_CACHE:-0}
+    volumes:
+      - hfcache:/srv/hf          # downloaded embedding / reranker models
+      - llmcache:/srv/app/v2/.llm_cache
+    restart: unless-stopped
+
+  # One-off job: builds the knowledge base from ./knowledge_base (run it once, and again when documents change)
+  ingest:
+    profiles: ["engine"]
+    build: ./model
+    depends_on:
+      kb: {condition: service_healthy}
+    environment: *model_env
+    volumes:
+      - hfcache:/srv/hf
+      - ./knowledge_base:/data:ro
+    command: ["sh", "/srv/app/v2/run_ingest.sh"]
+
+  frontend:
+    build: ./frontend
+    depends_on: [backend]
+    ports: ["8000:80"]
+    environment:
+      API_KEY: ${API_KEY:-}
+    restart: unless-stopped
+
+volumes:
+  mysqldata:
+  kbdata:
+  hfcache:
+  llmcache:

@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+  
+  /* Institutional Brand Palette */
+  --color-brand: #00915a;
+  --color-brand-dark: #007346;
+  --color-brand-light: #e6f7f0;
+  --color-page: #f8fafc;
+  --color-card: #ffffff;
+  --color-line: #e2e8f0;
+  --color-ink: #0f172a;
+  --color-sub: #64748b;
+  
+  /* Regulatory Verdicts */
+  --color-yes-bg: #ecfdf5;
+  --color-yes-line: #a7f3d0;
+  --color-yes-ink: #065f46;
+  
+  --color-no-bg: #fef2f2;
+  --color-no-line: #fecaca;
+  --color-no-ink: #991b1b;
+  
+  --color-rev-bg: #fffbeb;
+  --color-rev-line: #fde68a;
+  --color-rev-ink: #92400e;
+  
+  /* Multi-Jurisdiction Heatmap Colors (0: Safe/Grey, 1: Low, 2: Medium, 3: High) */
+  --color-heat-0: #f1f5f9;
+  --color-heat-0-ink: #475569;
+  
+  --color-heat-1: #fee2e2;
+  --color-heat-1-ink: #991b1b;
+  
+  --color-heat-2: #fca5a5;
+  --color-heat-2-ink: #7f1d1d;
+  
+  --color-heat-3: #ef4444;
+  --color-heat-3-ink: #ffffff;
+}
+
+html {
+  font-size: 14px;
+  scroll-behavior: smooth;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+}
+
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

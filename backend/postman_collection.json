@@ -1,0 +1,173 @@
+{
+ "info": {
+  "name": "IMPART backend",
+  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+ },
+ "variable": [
+  {
+   "key": "base",
+   "value": "http://localhost:8080"
+  },
+  {
+   "key": "api_key",
+   "value": ""
+  },
+  {
+   "key": "id",
+   "value": ""
+  }
+ ],
+ "item": [
+  {
+   "name": "Submit text",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "X-API-Key",
+      "value": "{{api_key}}"
+     },
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "url": "{{base}}/api/assessments",
+    "body": {
+     "mode": "raw",
+     "raw": "{\"cr_text\": \"Add a timestamp field to the trade report\"}"
+    }
+   }
+  },
+  {
+   "name": "Submit null",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "X-API-Key",
+      "value": "{{api_key}}"
+     },
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "url": "{{base}}/api/assessments",
+    "body": {
+     "mode": "raw",
+     "raw": "{\"cr_text\": null}"
+    }
+   }
+  },
+  {
+   "name": "Submit blank",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "X-API-Key",
+      "value": "{{api_key}}"
+     },
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "url": "{{base}}/api/assessments",
+    "body": {
+     "mode": "raw",
+     "raw": "{\"cr_text\": \"   \"}"
+    }
+   }
+  },
+  {
+   "name": "Upload file",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "X-API-Key",
+      "value": "{{api_key}}"
+     }
+    ],
+    "url": "{{base}}/api/assessments/upload",
+    "body": {
+     "mode": "formdata",
+     "formdata": [
+      {
+       "key": "file",
+       "type": "file",
+       "src": []
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "History",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "X-API-Key",
+      "value": "{{api_key}}"
+     }
+    ],
+    "url": "{{base}}/api/assessments?limit=20"
+   }
+  },
+  {
+   "name": "Get one",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "X-API-Key",
+      "value": "{{api_key}}"
+     }
+    ],
+    "url": "{{base}}/api/assessments/{{id}}"
+   }
+  },
+  {
+   "name": "Reassess",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "X-API-Key",
+      "value": "{{api_key}}"
+     }
+    ],
+    "url": "{{base}}/api/assessments/{{id}}/reassess"
+   }
+  },
+  {
+   "name": "Heatmap",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "X-API-Key",
+      "value": "{{api_key}}"
+     }
+    ],
+    "url": "{{base}}/api/analytics/heatmap"
+   }
+  },
+  {
+   "name": "Health",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "X-API-Key",
+      "value": "{{api_key}}"
+     }
+    ],
+    "url": "{{base}}/api/health"
+   }
+  }
+ ]
+}
