@@ -1,4 +1,9 @@
-"""FastAPI wrapper. Run from inside v2/:  uvicorn api:app --reload"""
+import sys
+from pathlib import Path
+
+# Ensure model directory is in sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 

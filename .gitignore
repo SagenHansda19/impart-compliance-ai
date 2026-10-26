@@ -1,7 +1,14 @@
 __pycache__/
 backend/__pycache__/
 .env
+*.env
+model/.env
+backend/.env
 v2/.llm_cache/
+model/.llm_cache/
 backend/.llm_cache/
+**/.llm_cache/
 .venv/
 eval_results.json
+*.db
+.~lock.*

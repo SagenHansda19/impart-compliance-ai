@@ -1,0 +1,582 @@
+[
+  {
+    "test_number": 1,
+    "timestamp": "2026-10-26 22:52:00",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "40/40 (100.0%)",
+    "row_accuracy": "8/8",
+    "total_time_s": 550.2,
+    "note": "100% Perfect Accuracy across all 5 regulations with openai/gpt-oss-20b"
+  },
+  {
+    "test_number": 2,
+    "timestamp": "2026-10-26 23:30:19",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "40/40 (100.0%)",
+    "row_accuracy": "8/8",
+    "total_time_s": 103.1,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": true,
+        "total_s": 3.51,
+        "avg_ret_ms": 7.8,
+        "total_llm_s": 1.98
+      },
+      {
+        "cr": 2,
+        "row_ok": true,
+        "total_s": 5.51,
+        "avg_ret_ms": 3.8,
+        "total_llm_s": 2.47
+      },
+      {
+        "cr": 6,
+        "row_ok": true,
+        "total_s": 3.16,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 2.11
+      },
+      {
+        "cr": 7,
+        "row_ok": true,
+        "total_s": 10.75,
+        "avg_ret_ms": 1114.4,
+        "total_llm_s": 3.91
+      },
+      {
+        "cr": 8,
+        "row_ok": true,
+        "total_s": 3.24,
+        "avg_ret_ms": 17.4,
+        "total_llm_s": 1.93
+      },
+      {
+        "cr": 15,
+        "row_ok": true,
+        "total_s": 5.17,
+        "avg_ret_ms": 3.6,
+        "total_llm_s": 3.88
+      },
+      {
+        "cr": 17,
+        "row_ok": true,
+        "total_s": 65.76,
+        "avg_ret_ms": 24.8,
+        "total_llm_s": 3.73
+      },
+      {
+        "cr": 18,
+        "row_ok": true,
+        "total_s": 5.91,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 3.02
+      }
+    ]
+  },
+  {
+    "test_number": 3,
+    "file": "UC 7 - Test Data (1)c9555a9.xlsx",
+    "timestamp": "2026-10-26 23:59:42",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "5/5 (100.0%)",
+    "row_accuracy": "1/1",
+    "total_time_s": 9.88,
+    "per_cr": [
+      {
+        "cr": 17,
+        "row_ok": true,
+        "total_s": 9.8,
+        "avg_ret_ms": 1130.8,
+        "total_llm_s": 2.54
+      }
+    ]
+  },
+  {
+    "test_number": 4,
+    "file": "UC 7 - Test Data (1)c9555a9.xlsx",
+    "timestamp": "2026-10-27 00:01:14",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "17/40 (42.5%)",
+    "row_accuracy": "2/8",
+    "total_time_s": 36.66,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": false,
+        "total_s": 4.32,
+        "avg_ret_ms": 7.2,
+        "total_llm_s": 3.0
+      },
+      {
+        "cr": 2,
+        "row_ok": true,
+        "total_s": 4.22,
+        "avg_ret_ms": 4.6,
+        "total_llm_s": 3.62
+      },
+      {
+        "cr": 6,
+        "row_ok": true,
+        "total_s": 3.78,
+        "avg_ret_ms": 4.4,
+        "total_llm_s": 2.19
+      },
+      {
+        "cr": 7,
+        "row_ok": false,
+        "total_s": 12.06,
+        "avg_ret_ms": 20.4,
+        "total_llm_s": 8.56
+      },
+      {
+        "cr": 8,
+        "row_ok": false,
+        "total_s": 4.43,
+        "avg_ret_ms": 7.0,
+        "total_llm_s": 1.47
+      },
+      {
+        "cr": 15,
+        "row_ok": false,
+        "total_s": 2.76,
+        "avg_ret_ms": 0.0,
+        "total_llm_s": 0.0
+      },
+      {
+        "cr": 17,
+        "row_ok": false,
+        "total_s": 2.54,
+        "avg_ret_ms": 0.0,
+        "total_llm_s": 0.0
+      },
+      {
+        "cr": 18,
+        "row_ok": false,
+        "total_s": 2.46,
+        "avg_ret_ms": 0.0,
+        "total_llm_s": 0.0
+      }
+    ]
+  },
+  {
+    "test_number": 5,
+    "file": "UC_7_-_Test_Cases.xlsx",
+    "timestamp": "2026-10-27 00:04:01",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "10/20 (50.0%)",
+    "row_accuracy": "2/4",
+    "total_time_s": 27.07,
+    "per_cr": [
+      {
+        "cr": 19,
+        "row_ok": true,
+        "total_s": 4.46,
+        "avg_ret_ms": 7.6,
+        "total_llm_s": 3.13
+      },
+      {
+        "cr": 20,
+        "row_ok": true,
+        "total_s": 9.18,
+        "avg_ret_ms": 1100.8,
+        "total_llm_s": 3.47
+      },
+      {
+        "cr": 21,
+        "row_ok": false,
+        "total_s": 8.12,
+        "avg_ret_ms": 25.2,
+        "total_llm_s": 14.79
+      },
+      {
+        "cr": 22,
+        "row_ok": false,
+        "total_s": 5.23,
+        "avg_ret_ms": 6.2,
+        "total_llm_s": 2.69
+      }
+    ]
+  },
+  {
+    "test_number": 6,
+    "file": "UC 7 - Test Data (1)c9555a9.xlsx",
+    "timestamp": "2026-10-27 00:05:01",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "5/5 (100.0%)",
+    "row_accuracy": "1/1",
+    "total_time_s": 11.09,
+    "per_cr": [
+      {
+        "cr": 17,
+        "row_ok": true,
+        "total_s": 11.01,
+        "avg_ret_ms": 1117.0,
+        "total_llm_s": 2.52
+      }
+    ]
+  },
+  {
+    "test_number": 7,
+    "file": "UC 7 - Test Data (1)c9555a9.xlsx",
+    "timestamp": "2026-10-27 00:05:42",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "13/40 (32.5%)",
+    "row_accuracy": "1/8",
+    "total_time_s": 35.16,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": false,
+        "total_s": 4.66,
+        "avg_ret_ms": 7.6,
+        "total_llm_s": 3.23
+      },
+      {
+        "cr": 2,
+        "row_ok": true,
+        "total_s": 7.93,
+        "avg_ret_ms": 1095.0,
+        "total_llm_s": 2.27
+      },
+      {
+        "cr": 6,
+        "row_ok": false,
+        "total_s": 7.67,
+        "avg_ret_ms": 29.6,
+        "total_llm_s": 14.08
+      },
+      {
+        "cr": 7,
+        "row_ok": false,
+        "total_s": 2.53,
+        "avg_ret_ms": 0.0,
+        "total_llm_s": 0.0
+      },
+      {
+        "cr": 8,
+        "row_ok": false,
+        "total_s": 3.53,
+        "avg_ret_ms": 0.0,
+        "total_llm_s": 0.0
+      },
+      {
+        "cr": 15,
+        "row_ok": false,
+        "total_s": 2.51,
+        "avg_ret_ms": 0.0,
+        "total_llm_s": 0.0
+      },
+      {
+        "cr": 17,
+        "row_ok": false,
+        "total_s": 3.81,
+        "avg_ret_ms": 8.4,
+        "total_llm_s": 1.67
+      },
+      {
+        "cr": 18,
+        "row_ok": false,
+        "total_s": 2.44,
+        "avg_ret_ms": 0.0,
+        "total_llm_s": 0.0
+      }
+    ]
+  },
+  {
+    "test_number": 8,
+    "file": "UC 7 - Test Data (1)c9555a9.xlsx",
+    "timestamp": "2026-10-27 00:08:49",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "40/40 (100.0%)",
+    "row_accuracy": "8/8",
+    "total_time_s": 141.39,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": true,
+        "total_s": 5.42,
+        "avg_ret_ms": 8.0,
+        "total_llm_s": 3.92
+      },
+      {
+        "cr": 2,
+        "row_ok": true,
+        "total_s": 3.94,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 2.9
+      },
+      {
+        "cr": 6,
+        "row_ok": true,
+        "total_s": 31.01,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 3.21
+      },
+      {
+        "cr": 7,
+        "row_ok": true,
+        "total_s": 26.39,
+        "avg_ret_ms": 1101.8,
+        "total_llm_s": 19.86
+      },
+      {
+        "cr": 8,
+        "row_ok": true,
+        "total_s": 3.4,
+        "avg_ret_ms": 26.6,
+        "total_llm_s": 1.66
+      },
+      {
+        "cr": 15,
+        "row_ok": true,
+        "total_s": 16.67,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 4.12
+      },
+      {
+        "cr": 17,
+        "row_ok": true,
+        "total_s": 38.52,
+        "avg_ret_ms": 21.4,
+        "total_llm_s": 36.89
+      },
+      {
+        "cr": 18,
+        "row_ok": true,
+        "total_s": 15.96,
+        "avg_ret_ms": 3.0,
+        "total_llm_s": 13.2
+      }
+    ]
+  },
+  {
+    "test_number": 9,
+    "file": "UC_7_-_Test_Cases.xlsx",
+    "timestamp": "2026-10-27 00:17:11",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "97/110 (88.2%)",
+    "row_accuracy": "16/22",
+    "total_time_s": 465.64,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": false,
+        "total_s": 4.62,
+        "avg_ret_ms": 8.8,
+        "total_llm_s": 3.56
+      },
+      {
+        "cr": 2,
+        "row_ok": true,
+        "total_s": 4.13,
+        "avg_ret_ms": 4.6,
+        "total_llm_s": 2.88
+      },
+      {
+        "cr": 6,
+        "row_ok": true,
+        "total_s": 30.02,
+        "avg_ret_ms": 3.8,
+        "total_llm_s": 2.87
+      },
+      {
+        "cr": 7,
+        "row_ok": true,
+        "total_s": 22.3,
+        "avg_ret_ms": 1122.8,
+        "total_llm_s": 14.97
+      },
+      {
+        "cr": 8,
+        "row_ok": true,
+        "total_s": 21.27,
+        "avg_ret_ms": 21.8,
+        "total_llm_s": 19.89
+      },
+      {
+        "cr": 15,
+        "row_ok": false,
+        "total_s": 5.95,
+        "avg_ret_ms": 3.8,
+        "total_llm_s": 4.44
+      },
+      {
+        "cr": 17,
+        "row_ok": true,
+        "total_s": 15.13,
+        "avg_ret_ms": 15.8,
+        "total_llm_s": 2.18
+      },
+      {
+        "cr": 18,
+        "row_ok": true,
+        "total_s": 76.52,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 75.35
+      },
+      {
+        "cr": 19,
+        "row_ok": true,
+        "total_s": 2.74,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 1.64
+      },
+      {
+        "cr": 20,
+        "row_ok": true,
+        "total_s": 3.4,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 2.46
+      },
+      {
+        "cr": 21,
+        "row_ok": false,
+        "total_s": 71.56,
+        "avg_ret_ms": 4.4,
+        "total_llm_s": 70.38
+      },
+      {
+        "cr": 22,
+        "row_ok": false,
+        "total_s": 3.19,
+        "avg_ret_ms": 3.8,
+        "total_llm_s": 1.91
+      },
+      {
+        "cr": 23,
+        "row_ok": false,
+        "total_s": 29.48,
+        "avg_ret_ms": 4.2,
+        "total_llm_s": 28.15
+      },
+      {
+        "cr": 24,
+        "row_ok": true,
+        "total_s": 5.8,
+        "avg_ret_ms": 3.8,
+        "total_llm_s": 5.0
+      },
+      {
+        "cr": 25,
+        "row_ok": true,
+        "total_s": 6.31,
+        "avg_ret_ms": 21.2,
+        "total_llm_s": 2.89
+      },
+      {
+        "cr": 26,
+        "row_ok": true,
+        "total_s": 26.37,
+        "avg_ret_ms": 6.4,
+        "total_llm_s": 2.5
+      },
+      {
+        "cr": 27,
+        "row_ok": true,
+        "total_s": 32.61,
+        "avg_ret_ms": 5.4,
+        "total_llm_s": 31.59
+      },
+      {
+        "cr": 28,
+        "row_ok": true,
+        "total_s": 3.91,
+        "avg_ret_ms": 13.8,
+        "total_llm_s": 3.06
+      },
+      {
+        "cr": 29,
+        "row_ok": true,
+        "total_s": 4.28,
+        "avg_ret_ms": 9.4,
+        "total_llm_s": 2.94
+      },
+      {
+        "cr": 30,
+        "row_ok": true,
+        "total_s": 81.79,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 80.44
+      },
+      {
+        "cr": 31,
+        "row_ok": true,
+        "total_s": 6.05,
+        "avg_ret_ms": 4.2,
+        "total_llm_s": 3.93
+      },
+      {
+        "cr": 32,
+        "row_ok": false,
+        "total_s": 8.08,
+        "avg_ret_ms": 3.6,
+        "total_llm_s": 6.8
+      }
+    ]
+  },
+  {
+    "test_number": 10,
+    "file": "UC_7_-_Test_Cases.xlsx",
+    "timestamp": "2026-10-27 00:29:10",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "9/15 (60.0%)",
+    "row_accuracy": "1/3",
+    "total_time_s": 13.63,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": true,
+        "total_s": 5.17,
+        "avg_ret_ms": 7.4,
+        "total_llm_s": 3.14
+      },
+      {
+        "cr": 15,
+        "row_ok": false,
+        "total_s": 4.46,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 3.15
+      },
+      {
+        "cr": 21,
+        "row_ok": false,
+        "total_s": 3.91,
+        "avg_ret_ms": 4.2,
+        "total_llm_s": 3.0
+      }
+    ]
+  },
+  {
+    "test_number": 11,
+    "file": "UC_7_-_Test_Cases.xlsx",
+    "timestamp": "2026-10-27 00:48:13",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "11/15 (73.3%)",
+    "row_accuracy": "1/3",
+    "total_time_s": 12.22,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": true,
+        "total_s": 4.33,
+        "avg_ret_ms": 7.4,
+        "total_llm_s": 2.79
+      },
+      {
+        "cr": 15,
+        "row_ok": false,
+        "total_s": 3.77,
+        "avg_ret_ms": 3.8,
+        "total_llm_s": 2.17
+      },
+      {
+        "cr": 21,
+        "row_ok": false,
+        "total_s": 4.04,
+        "avg_ret_ms": 12.8,
+        "total_llm_s": 3.15
+      }
+    ]
+  }
+]

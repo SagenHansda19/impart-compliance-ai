@@ -2,7 +2,7 @@
 import re
 from functools import lru_cache
 
-from common import db, embed_query, rerank_scores, vec_literal
+from common import batch_embed_queries, db, embed_query, rerank_scores, vec_literal
 
 STOP = set("the a an of to in on for and or with by is are be as at from that this it its into per "
            "should must will can all any each when where which what shall".split())
@@ -56,21 +56,27 @@ def fetch_chunks(ids):
     return [dict(zip(keys, rows[i])) for i in ids if i in rows]
 
 
-def hybrid_search(queries, reg, source_types=None, focus=None, per_query=20, pool=40, top_k=6):
+def hybrid_search(queries, reg, source_types=None, focus=None, per_query=15, pool=12, top_k=6):
     """Vector + full-text per query -> reciprocal-rank fusion -> cross-encoder rerank."""
-    queries = [q for q in queries if q and q.strip()]
+    queries = list(dict.fromkeys(q.strip() for q in queries if q and q.strip()))
     if not queries:
         return []
+
+    # Batch embed all queries in one forward pass
+    vectors = batch_embed_queries(queries)
+    vec_map = {q: vec_literal(v) for q, v in zip(queries, vectors)}
+
     fused = {}
     type_sql = " AND source_type = ANY(%s)" if source_types else ""
     with db() as conn, conn.cursor() as cur:
         for q in queries:
-            vec = vec_literal(embed_query(q))
+            vec = vec_map[q]
             params = [reg] + ([list(source_types)] if source_types else []) + [vec, per_query]
             cur.execute(f"""SELECT id FROM regulatory_chunks WHERE jurisdiction=%s{type_sql}
                             ORDER BY embedding <=> %s::vector LIMIT %s""", params)
             for rank, (cid,) in enumerate(cur.fetchall(), 1):
                 fused[cid] = fused.get(cid, 0.0) + 1.0 / (60 + rank)
+
             tsq = to_or_tsquery(q)
             if tsq:
                 params = [reg] + ([list(source_types)] if source_types else []) + [tsq, tsq, per_query]
@@ -79,11 +85,15 @@ def hybrid_search(queries, reg, source_types=None, focus=None, per_query=20, poo
                                 ORDER BY ts_rank_cd(tsv, to_tsquery('english', %s)) DESC LIMIT %s""", params)
                 for rank, (cid,) in enumerate(cur.fetchall(), 1):
                     fused[cid] = fused.get(cid, 0.0) + 1.0 / (60 + rank)
+
     top_ids = sorted(fused, key=fused.get, reverse=True)[:pool]
     chunks = fetch_chunks(top_ids)
-    if not chunks:
-        return []
-    scores = rerank_scores(focus or queries[0], [c["chunk_text"][:2000] for c in chunks])
+    if not chunks or len(chunks) <= top_k:
+        return chunks
+    import os
+    if os.environ.get("ENABLE_RERANKER", "0") != "1":
+        return chunks[:top_k]
+    scores = rerank_scores(focus or queries[0], [c["chunk_text"][:1200] for c in chunks])
     for c, s in zip(chunks, scores):
         c["score"] = s
     chunks.sort(key=lambda c: c["score"], reverse=True)
