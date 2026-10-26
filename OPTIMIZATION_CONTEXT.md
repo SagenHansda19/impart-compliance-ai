@@ -85,10 +85,20 @@
   - Falls back to the nearest word boundary if truncation is required, ensuring text is never cut mid-word.
   - Updated `_trim_chunk` to also respect word boundaries (`rsplit(' ', 1)`).
 
+### 10. Daily Quota (TPD) Failover & Requirement Text Preservation
+- **Root Cause of Truncated Requirements & Concepts**:
+  - The UI showed requirement text cut off at `thei` (`...on behalf of thei`), concept cut off at `liabl` (`...are legally liabl`), and summary cut off at `on behalf`.
+  - **Why it happened**: `openai/gpt-oss-20b` hit its daily token limit on Groq (200,000 TPD). In `model/common.py`, encountering a daily quota previously raised an immediate `RuntimeError("DAILY quota reached...")` instead of rotating to the next model.
+  - When `analyze_cr` caught the error, it fell back to a hardcoded emergency placeholder that did `cr_text[:80]` (80 chars, cutting `liable` to `liabl`), `cr_text[:400]` (400 chars, cutting `their` to `thei`), and `cr_text[:150]` (150 chars, cutting `behalf of themselves` to `on behalf`).
+- **Applied Fixes**:
+  - **Graceful Daily Quota Failover**: Updated `model/common.py` so when a model receives a daily quota limit, it puts *that specific model* on cooldown for its reset period (or 1800s) and automatically rotates to the next healthy model in `JUDGE_MODELS` (e.g. `openai/gpt-oss-120b`).
+  - **Compound Reset Time Parsing**: Enhanced `parse_reset_seconds` to parse compound strings like `try again in 3m33.408s`.
+  - **Clean Boundary Fallback & Intact Requirements**: Replaced hard slices in `model/pipeline.py` with `_first_sentence(cr_text, max_len=250)` and `_clean_phrase(cr_text, max_words=8)`. Full requirement text is preserved completely without arbitrary character cuts.
+
 ---
 
-
 ## Instructions for Testing & Benchmark Runs
+
 To run evaluations across different test files and subsets:
 ```bash
 # 1. Run the default 8 CR test suite:

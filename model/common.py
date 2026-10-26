@@ -62,7 +62,16 @@ _model_cooldowns = {}  # model_name -> cooldown_expiration_timestamp
 def parse_reset_seconds(val_str: str) -> float:
     if not val_str:
         return 2.0
-    m_sec = re.search(r"([\d\.]+)\s*(ms|s|m)?", str(val_str))
+    val_str = str(val_str).strip()
+    # Check for compound "3m33.408s" or "3m"
+    m_comp = re.search(r"(?:(\d+)\s*m)?\s*([\d\.]+)\s*s?", val_str)
+    if m_comp and (m_comp.group(1) or m_comp.group(2)):
+        mins = float(m_comp.group(1) or 0)
+        secs = float(m_comp.group(2) or 0)
+        if "ms" in val_str:
+            return secs / 1000.0
+        return mins * 60.0 + secs
+    m_sec = re.search(r"([\d\.]+)\s*(ms|s|m)?", val_str)
     if m_sec:
         v, unit = float(m_sec.group(1)), m_sec.group(2) or "s"
         return (v / 1000.0 if unit == "ms" else v * 60.0 if unit == "m" else v)
@@ -336,21 +345,20 @@ def llm_json(system: str, user: str, model: str = None, temperature: float = 0.0
             else:
                 last = f"HTTP {r.status_code}: {r.text[:300]}"
                 if r.status_code == 429:
-                    if re.search(r"per[- ]?day|daily", r.text, re.I):
-                        raise RuntimeError(f"DAILY quota reached: {r.text[:300]}")
+                    is_daily = bool(re.search(r"per[- ]?day|daily", r.text, re.I))
 
                     reset_tokens = r.headers.get("x-ratelimit-reset-tokens", "")
                     retry_after = r.headers.get("Retry-After", "")
-                    m_text = re.search(r"try again in ([\d\.]+)s", r.text, re.I)
+                    m_text = re.search(r"try again in ([^\.\s]+(?:\s*[^\.\s]+)?)", r.text, re.I)
 
-                    if reset_tokens:
+                    if m_text:
+                        cooldown_sec = parse_reset_seconds(m_text.group(1))
+                    elif reset_tokens:
                         cooldown_sec = parse_reset_seconds(reset_tokens)
                     elif retry_after and retry_after.replace(".", "", 1).isdigit():
                         cooldown_sec = float(retry_after)
-                    elif m_text:
-                        cooldown_sec = float(m_text.group(1))
                     else:
-                        cooldown_sec = min(3 * (attempt + 1), 30)
+                        cooldown_sec = 1800.0 if is_daily else min(3 * (attempt + 1), 30)
 
                     mark_model_cooldown(current_model, cooldown_sec + 0.5)
 
@@ -364,12 +372,15 @@ def llm_json(system: str, user: str, model: str = None, temperature: float = 0.0
                             print(f"  ⏳ [Rate-Limit Cooldown] All models cooling down. Pausing {wait_for_next:.1f}s for {next_m}...")
                             time.sleep(min(wait_for_next, 60.0))
                         else:
-                            print(f"  🔄 [Rate-Limit Failover] {current_model} reached limit -> rotating to {next_m} (attempt {attempt + 1})")
+                            tag = "Daily Quota Failover" if is_daily else "Rate-Limit Failover"
+                            print(f"  🔄 [{tag}] {current_model} reached limit -> rotating to {next_m} (attempt {attempt + 1})")
                             time.sleep(0.1)
 
                         current_model = next_m
                         continue
 
+                    if is_daily:
+                        raise RuntimeError(f"DAILY quota reached for all models: {r.text[:300]}")
                     wait = cooldown_sec + 0.5
         except (requests.RequestException, KeyError, TypeError, ValueError) as e:
             last = f"{type(e).__name__}: {e}"

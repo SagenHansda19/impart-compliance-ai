@@ -209,6 +209,27 @@ def _norm(s: str) -> str:
     return re.sub(r"\s+", " ", s or "").strip().lower()
 
 
+def _clean_phrase(text: str, max_words: int = 8) -> str:
+    """Return the first N clean words without trailing punctuation."""
+    words = (text or "").strip().split()
+    if not words:
+        return "Regulatory Requirement"
+    picked = " ".join(words[:max_words])
+    return re.sub(r"[\.,;:!\?]+$", "", picked)
+
+
+def _first_sentence(text: str, max_len: int = 250) -> str:
+    """Extract clean first sentence up to max_len on word boundaries."""
+    text = (text or "").strip()
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    if sentences and sentences[0]:
+        first = sentences[0].strip()
+        if len(first) <= max_len:
+            return first
+    truncated = text[:max_len].rsplit(" ", 1)[0]
+    return (truncated.rstrip(".,;:- ") + "...").strip()
+
+
 def analyze_cr(cr_text: str) -> dict:
     try:
         a = llm_json(ANALYZE_SYSTEM, cr_text, model=None)
@@ -221,19 +242,28 @@ def analyze_cr(cr_text: str) -> dict:
     for r in (raw_reqs if isinstance(raw_reqs, list) else [])[:5]:
         if not isinstance(r, dict):
             continue
+        concept_raw = str(r.get("concept") or "").strip()
+        req_raw = str(r.get("requirement") or "").strip()
         reqs.append({
             "id": f"R{len(reqs) + 1}",
             "kind": "scope" if str(r.get("kind", "")).lower() == "scope" else "field",
-            "concept": str(r.get("concept") or "")[:200],
-            "requirement": str(r.get("requirement") or "")[:500],
+            "concept": concept_raw or "Regulatory Requirement",
+            "requirement": req_raw or cr_text.strip(),
             "required_max_length": to_int(r.get("required_max_length")),
             "search_queries": [str(q) for q in (r.get("search_queries") or []) if q][:3],
         })
     if not reqs:
-        reqs = [{"id": "R1", "kind": "field", "concept": cr_text[:80], "requirement": cr_text[:400],
-                 "required_max_length": None, "search_queries": [cr_text[:120]]}]
+        reqs = [{
+            "id": "R1",
+            "kind": "scope" if re.search(r"delegat|etd|bond\s*connect|scope", cr_text, re.I) else "field",
+            "concept": _clean_phrase(cr_text, max_words=8),
+            "requirement": cr_text.strip(),
+            "required_max_length": None,
+            "search_queries": [_clean_phrase(cr_text, max_words=12)]
+        }]
     a["requirements"] = reqs
-    a.setdefault("summary", cr_text[:150])
+    if not a.get("summary") or a["summary"] == cr_text:
+        a["summary"] = _first_sentence(cr_text, max_len=250)
     a["is_ambiguous"] = bool(a.get("is_ambiguous"))
     a.setdefault("clarification_prompt", None)
     return a
