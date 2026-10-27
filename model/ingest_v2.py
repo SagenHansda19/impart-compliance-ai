@@ -13,6 +13,9 @@ import re
 import sys
 from pathlib import Path
 
+# Ensure model directory is in sys.path when run as a script
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 import pandas as pd
 from psycopg2.extras import execute_values
 
@@ -242,9 +245,12 @@ def run():
     root = find_root()
     print(f"Scanning {root}")
     unmapped = []
-    for path in sorted(root.iterdir()):
+    candidates = sorted(root.rglob("*")) if any(root.glob("Regulations/*")) else sorted(root.iterdir())
+    for path in candidates:
+        if path.is_dir():
+            continue
         n = path.name
-        if n.startswith(("~$", ".")) or path.suffix.lower() not in (".xlsx", ".pdf"):
+        if n.startswith(("~$", ".", ".~lock")) or path.suffix.lower() not in (".xlsx", ".pdf"):
             continue
         if any(s in n.lower() for s in SKIP_FILE_SUBSTRINGS):
             continue
