@@ -578,5 +578,304 @@
         "total_llm_s": 3.15
       }
     ]
+  },
+  {
+    "test_number": 12,
+    "file": "UC 7 - Test Data (1)c9555a9.xlsx",
+    "timestamp": "2026-10-27 12:44:41",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "39/40 (97.5%)",
+    "row_accuracy": "7/8",
+    "total_time_s": 137.77,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": true,
+        "total_s": 3.87,
+        "avg_ret_ms": 8.6,
+        "total_llm_s": 2.83
+      },
+      {
+        "cr": 2,
+        "row_ok": true,
+        "total_s": 10.67,
+        "avg_ret_ms": 3.4,
+        "total_llm_s": 2.85
+      },
+      {
+        "cr": 6,
+        "row_ok": false,
+        "total_s": 3.08,
+        "avg_ret_ms": 3.4,
+        "total_llm_s": 1.82
+      },
+      {
+        "cr": 7,
+        "row_ok": true,
+        "total_s": 49.49,
+        "avg_ret_ms": 1254.6,
+        "total_llm_s": 41.56
+      },
+      {
+        "cr": 8,
+        "row_ok": true,
+        "total_s": 3.85,
+        "avg_ret_ms": 26.6,
+        "total_llm_s": 2.42
+      },
+      {
+        "cr": 15,
+        "row_ok": true,
+        "total_s": 3.65,
+        "avg_ret_ms": 3.0,
+        "total_llm_s": 2.35
+      },
+      {
+        "cr": 17,
+        "row_ok": true,
+        "total_s": 58.8,
+        "avg_ret_ms": 29.0,
+        "total_llm_s": 56.94
+      },
+      {
+        "cr": 18,
+        "row_ok": true,
+        "total_s": 4.27,
+        "avg_ret_ms": 3.0,
+        "total_llm_s": 3.16
+      }
+    ]
+  },
+  {
+    "test_number": 13,
+    "file": "UC 7 - Test Data (1)c9555a9.xlsx",
+    "timestamp": "2026-10-27 12:52:10",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "39/40 (97.5%)",
+    "row_accuracy": "7/8",
+    "total_time_s": 87.13,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": true,
+        "total_s": 4.36,
+        "avg_ret_ms": 7.4,
+        "total_llm_s": 3.05
+      },
+      {
+        "cr": 2,
+        "row_ok": true,
+        "total_s": 2.65,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 1.99
+      },
+      {
+        "cr": 6,
+        "row_ok": true,
+        "total_s": 3.38,
+        "avg_ret_ms": 4.0,
+        "total_llm_s": 2.12
+      },
+      {
+        "cr": 7,
+        "row_ok": true,
+        "total_s": 9.8,
+        "avg_ret_ms": 1150.0,
+        "total_llm_s": 2.71
+      },
+      {
+        "cr": 8,
+        "row_ok": true,
+        "total_s": 56.55,
+        "avg_ret_ms": 22.0,
+        "total_llm_s": 55.08
+      },
+      {
+        "cr": 15,
+        "row_ok": true,
+        "total_s": 4.18,
+        "avg_ret_ms": 4.2,
+        "total_llm_s": 2.52
+      },
+      {
+        "cr": 17,
+        "row_ok": true,
+        "total_s": 4.15,
+        "avg_ret_ms": 22.6,
+        "total_llm_s": 2.6
+      },
+      {
+        "cr": 18,
+        "row_ok": false,
+        "total_s": 1.97,
+        "avg_ret_ms": 3.8,
+        "total_llm_s": 1.2
+      }
+    ]
+  },
+  {
+    "test_number": 14,
+    "file": "UC_7_-_Test_Cases.xlsx",
+    "timestamp": "2026-10-27 16:59:10",
+    "model": "openai/gpt-oss-20b",
+    "cell_accuracy": "94/110 (85.5%)",
+    "row_accuracy": "14/22",
+    "total_time_s": 308.07,
+    "per_cr": [
+      {
+        "cr": 1,
+        "row_ok": true,
+        "total_s": 3.52,
+        "avg_ret_ms": 8.6,
+        "total_llm_s": 2.42
+      },
+      {
+        "cr": 2,
+        "row_ok": true,
+        "total_s": 3.4,
+        "avg_ret_ms": 3.8,
+        "total_llm_s": 2.79
+      },
+      {
+        "cr": 6,
+        "row_ok": true,
+        "total_s": 3.61,
+        "avg_ret_ms": 3.6,
+        "total_llm_s": 2.34
+      },
+      {
+        "cr": 7,
+        "row_ok": true,
+        "total_s": 57.15,
+        "avg_ret_ms": 1217.6,
+        "total_llm_s": 32.42
+      },
+      {
+        "cr": 8,
+        "row_ok": true,
+        "total_s": 2.96,
+        "avg_ret_ms": 36.0,
+        "total_llm_s": 2.15
+      },
+      {
+        "cr": 15,
+        "row_ok": false,
+        "total_s": 3.38,
+        "avg_ret_ms": 3.2,
+        "total_llm_s": 1.99
+      },
+      {
+        "cr": 17,
+        "row_ok": true,
+        "total_s": 4.75,
+        "avg_ret_ms": 19.8,
+        "total_llm_s": 2.04
+      },
+      {
+        "cr": 18,
+        "row_ok": true,
+        "total_s": 4.16,
+        "avg_ret_ms": 3.0,
+        "total_llm_s": 2.83
+      },
+      {
+        "cr": 19,
+        "row_ok": false,
+        "total_s": 41.12,
+        "avg_ret_ms": 4.4,
+        "total_llm_s": 39.65
+      },
+      {
+        "cr": 20,
+        "row_ok": true,
+        "total_s": 20.27,
+        "avg_ret_ms": 3.6,
+        "total_llm_s": 19.2
+      },
+      {
+        "cr": 21,
+        "row_ok": true,
+        "total_s": 4.71,
+        "avg_ret_ms": 3.4,
+        "total_llm_s": 3.24
+      },
+      {
+        "cr": 22,
+        "row_ok": false,
+        "total_s": 8.24,
+        "avg_ret_ms": 3.4,
+        "total_llm_s": 7.27
+      },
+      {
+        "cr": 23,
+        "row_ok": false,
+        "total_s": 61.23,
+        "avg_ret_ms": 3.0,
+        "total_llm_s": 60.13
+      },
+      {
+        "cr": 24,
+        "row_ok": true,
+        "total_s": 5.96,
+        "avg_ret_ms": 3.0,
+        "total_llm_s": 4.67
+      },
+      {
+        "cr": 25,
+        "row_ok": false,
+        "total_s": 4.98,
+        "avg_ret_ms": 18.8,
+        "total_llm_s": 3.28
+      },
+      {
+        "cr": 26,
+        "row_ok": true,
+        "total_s": 5.3,
+        "avg_ret_ms": 6.2,
+        "total_llm_s": 3.27
+      },
+      {
+        "cr": 27,
+        "row_ok": true,
+        "total_s": 4.31,
+        "avg_ret_ms": 3.2,
+        "total_llm_s": 2.88
+      },
+      {
+        "cr": 28,
+        "row_ok": true,
+        "total_s": 52.39,
+        "avg_ret_ms": 11.0,
+        "total_llm_s": 32.43
+      },
+      {
+        "cr": 29,
+        "row_ok": true,
+        "total_s": 3.7,
+        "avg_ret_ms": 3.2,
+        "total_llm_s": 2.69
+      },
+      {
+        "cr": 30,
+        "row_ok": false,
+        "total_s": 3.21,
+        "avg_ret_ms": 3.2,
+        "total_llm_s": 1.98
+      },
+      {
+        "cr": 31,
+        "row_ok": false,
+        "total_s": 4.38,
+        "avg_ret_ms": 3.4,
+        "total_llm_s": 3.23
+      },
+      {
+        "cr": 32,
+        "row_ok": false,
+        "total_s": 5.21,
+        "avg_ret_ms": 3.0,
+        "total_llm_s": 3.79
+      }
+    ]
   }
 ]

@@ -665,6 +665,7 @@ def build_unified_system_prompt(regs: list) -> str:
             r_rules.append("  * Package identifier maximum length is 35 characters.")
             r_rules.append("  * ETDs are out of scope (OTC derivatives only).")
             r_rules.append("  * Supports event timestamps down to the second (YYYY-MM-DDThh:mm:ssZ).")
+            r_rules.append("  * Accommodates separate IM and VM collateral portfolio codes.")
         else:  # ASIC, MAS, etc.
             r_rules.append("  * Supports event timestamps down to the second (YYYY-MM-DDThh:mm:ssZ).")
             r_rules.append("  * Accommodates separate IM and VM collateral portfolio codes.")

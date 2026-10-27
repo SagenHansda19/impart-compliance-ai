@@ -46,6 +46,7 @@ export interface Requirement {
   concept?: string;
   requirement?: string;
   required_max_length?: number | null;
+  search_queries?: string[];
 }
 
 export interface SpectrumItem {
