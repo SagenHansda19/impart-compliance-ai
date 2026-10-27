@@ -5,12 +5,16 @@ from sqlalchemy.pool import StaticPool
 from .config import settings
 
 _kw: dict = {"pool_pre_ping": True, "pool_recycle": 280}  # recycle before MySQL closes idle connections
-if settings.database_url.startswith("sqlite"):  # used by the unit tests only
+db_url = settings.database_url
+if db_url.startswith("sqlite"):  # used by the unit tests only
     _kw = {"connect_args": {"check_same_thread": False}}
-    if ":memory:" in settings.database_url:
+    if ":memory:" in db_url:
         _kw["poolclass"] = StaticPool
+elif db_url.startswith("postgresql://"):
+    # SQLAlchemy 2.0 defaults postgresql:// to psycopg (v3). Use psycopg2 if +driver is omitted.
+    db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
 
-engine = create_engine(settings.database_url, future=True, **_kw)
+engine = create_engine(db_url, future=True, **_kw)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
 
