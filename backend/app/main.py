@@ -37,3 +37,8 @@ install_handlers(app)
 app.include_router(health.router)
 app.include_router(assessments.router)
 app.include_router(analytics.router)
+
+
+@app.api_route("/", methods=["GET", "HEAD"])
+def root():
+    return {"status": "ok", "service": "impart-backend-api"}

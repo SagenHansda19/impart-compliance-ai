@@ -62,20 +62,25 @@ def hybrid_search(queries, reg, source_types=None, focus=None, per_query=15, poo
     if not queries:
         return []
 
-    # Batch embed all queries in one forward pass
-    vectors = batch_embed_queries(queries)
-    vec_map = {q: vec_literal(v) for q, v in zip(queries, vectors)}
+    # Batch embed all queries in one forward pass (if embedder is available)
+    try:
+        vectors = batch_embed_queries(queries)
+        vec_map = {q: vec_literal(v) for q, v in zip(queries, vectors)} if vectors else {}
+    except Exception as e:
+        print(f"⚠️ Vector embedding failed ({e}), using database FTS")
+        vec_map = {}
 
     fused = {}
     type_sql = " AND source_type = ANY(%s)" if source_types else ""
     with db() as conn, conn.cursor() as cur:
         for q in queries:
-            vec = vec_map[q]
-            params = [reg] + ([list(source_types)] if source_types else []) + [vec, per_query]
-            cur.execute(f"""SELECT id FROM regulatory_chunks WHERE jurisdiction=%s{type_sql}
-                            ORDER BY embedding <=> %s::vector LIMIT %s""", params)
-            for rank, (cid,) in enumerate(cur.fetchall(), 1):
-                fused[cid] = fused.get(cid, 0.0) + 1.0 / (60 + rank)
+            if q in vec_map:
+                vec = vec_map[q]
+                params = [reg] + ([list(source_types)] if source_types else []) + [vec, per_query]
+                cur.execute(f"""SELECT id FROM regulatory_chunks WHERE jurisdiction=%s{type_sql}
+                                ORDER BY embedding <=> %s::vector LIMIT %s""", params)
+                for rank, (cid,) in enumerate(cur.fetchall(), 1):
+                    fused[cid] = fused.get(cid, 0.0) + 1.0 / (60 + rank)
 
             tsq = to_or_tsquery(q)
             if tsq:

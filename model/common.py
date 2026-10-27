@@ -198,12 +198,18 @@ def get_device():
 
 def get_embedder():
     global _embedder
+    if os.environ.get("ENABLE_LOCAL_EMBEDDER", "1") == "0":
+        return None
     with _model_lock:
         if _embedder is None:
-            from sentence_transformers import SentenceTransformer
-            dev = get_device()
-            print(f"Loading embedder {EMBED_MODEL_NAME} on {dev} ...")
-            _embedder = SentenceTransformer(EMBED_MODEL_NAME, device=dev)
+            try:
+                from sentence_transformers import SentenceTransformer
+                dev = get_device()
+                print(f"Loading embedder {EMBED_MODEL_NAME} on {dev} ...")
+                _embedder = SentenceTransformer(EMBED_MODEL_NAME, device=dev)
+            except Exception as e:
+                print(f"⚠️ Failed to load local embedder ({e}), falling back to database GIN FTS")
+                return None
     return _embedder
 
 
@@ -247,15 +253,16 @@ def batch_embed_queries(texts: list) -> list:
     # Encode misses in a single forward pass
     if missing:
         m = get_embedder()
-        prompts = [QUERY_PREFIX + t for t in missing]
-        with _model_lock:
-            vecs = m.encode(prompts, batch_size=len(prompts), normalize_embeddings=True)
-        with _embed_cache_lock:
-            for t, v in zip(missing, vecs):
-                _embed_cache[t] = [float(x) for x in v]
-                results[t] = _embed_cache[t]
+        if m is not None:
+            prompts = [QUERY_PREFIX + t for t in missing]
+            with _model_lock:
+                vecs = m.encode(prompts, batch_size=len(prompts), normalize_embeddings=True)
+            with _embed_cache_lock:
+                for t, v in zip(missing, vecs):
+                    _embed_cache[t] = [float(x) for x in v]
+                    results[t] = _embed_cache[t]
 
-    return [results[t.strip()] for t in texts if t and t.strip()]
+    return [results[t.strip()] for t in texts if t and t.strip() and t.strip() in results]
 
 
 def embed_docs(texts):
