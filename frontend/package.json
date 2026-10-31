@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:cloud": "BACKEND_URL=https://impart-compliance-ai.onrender.com vite",
+    "dev:local": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run"
