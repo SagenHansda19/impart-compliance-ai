@@ -111,7 +111,7 @@ export function ChatInputBar({
       {/* Fluid Glassmorphic Input Container */}
       <form
         onSubmit={handleSubmit}
-        className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white/70 backdrop-blur-md shadow-2xl p-3.5 outline-none focus:outline-none transition-none"
+        className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/70 bg-white/90 backdrop-blur-xl shadow-xl p-3.5 focus-within:border-slate-600 focus-within:ring-1 focus-within:ring-slate-600/50 transition-all duration-150"
       >
         <div className="relative flex items-end gap-2">
           <textarea
@@ -124,13 +124,13 @@ export function ChatInputBar({
             onKeyDown={handleKeyDown}
             disabled={busy}
             placeholder="Type the change request in plain English... (Press Enter to submit, Shift+Enter for newline)"
-            className="w-full resize-none bg-transparent px-1.5 py-1 text-[13px] dark:text-slate-100 text-slate-900 dark:placeholder:text-slate-500 placeholder:text-slate-400 focus:outline-none focus:ring-0 outline-none border-none leading-relaxed max-h-[180px] overflow-y-auto"
+            className="w-full resize-none bg-transparent px-2 py-1 text-[13px] dark:text-slate-100 text-slate-900 dark:placeholder:text-slate-500 placeholder:text-slate-400 focus:outline-none focus:ring-0 outline-none border-none leading-relaxed max-h-[180px] overflow-y-auto"
           />
 
           <button
             type="submit"
             disabled={busy}
-            className="cursor-pointer shrink-0 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500 text-white px-3.5 py-2 flex items-center justify-center transition-colors active:scale-95 focus:outline-none focus:ring-0 outline-none"
+            className="cursor-pointer shrink-0 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500 text-white px-3.5 py-2 flex items-center justify-center transition-all active:scale-95 shadow-xs font-semibold"
             title="Assess impact (Enter)"
             aria-label="Assess impact"
           >

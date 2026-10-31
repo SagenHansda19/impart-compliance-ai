@@ -43,39 +43,43 @@ export function ReasoningState({
     externalElapsed !== undefined ? externalElapsed.toFixed(1) : internalElapsed.toFixed(1);
 
   return (
-    <div className="w-full max-w-6xl mx-auto rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white/70 backdrop-blur-md shadow-2xl transition-all duration-300 overflow-hidden">
+    <div className="w-full rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md shadow-xl transition-all duration-300 overflow-hidden">
       {/* Header Button: ChatGPT/Claude o1 Style Collapsible Thinking Indicator */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full cursor-pointer px-5 py-3.5 flex items-center justify-between text-left hover:dark:bg-slate-800/30 hover:bg-slate-100/50 transition-colors select-none"
+        className="w-full cursor-pointer px-5 py-3.5 flex items-center justify-between text-left hover:dark:bg-slate-900/40 hover:bg-slate-100/60 transition-colors select-none focus:outline-none"
         aria-expanded={isOpen}
       >
-        <div className="flex items-center gap-3">
-          <div className="relative flex size-7 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="relative flex size-8 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 shadow-inner">
             {busy ? (
-              <SparklesIcon className="size-4 animate-spin" />
+              <SparklesIcon className="size-4 animate-spin text-emerald-400" />
             ) : (
-              <SparklesIcon className="size-4 text-emerald-400" />
+              <span className="text-emerald-400 font-bold text-xs">✓</span>
             )}
           </div>
 
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold dark:text-slate-200 text-slate-800 tracking-tight">
-                {busy ? "Thinking Process" : "Thought Process"}
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-bold dark:text-white text-slate-900 tracking-tight">
+                Reasoning & Verification Process
               </span>
-              <span className="font-mono text-[11px] dark:text-slate-400 text-slate-500">
-                ({displayTime}s)
+              <span className="font-mono text-[11px] dark:text-slate-400 text-slate-500 rounded px-1.5 py-0.2 dark:bg-slate-900 bg-slate-100 border dark:border-slate-800 border-slate-200">
+                {busy ? `${displayTime}s` : `Completed in ${displayTime}s`}
               </span>
-              {busy && (
-                <span className="flex size-1.5 relative">
+              {busy ? (
+                <span className="flex size-2 relative">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500"></span>
+                  <span className="relative inline-flex size-2 rounded-full bg-emerald-500"></span>
+                </span>
+              ) : (
+                <span className="text-[10px] font-mono text-emerald-500 dark:text-emerald-400 font-medium">
+                  Verified
                 </span>
               )}
             </div>
-            <p className="text-[11px] dark:text-slate-400 text-slate-500 mt-0.5 line-clamp-1">
+            <p className="text-[11px] dark:text-slate-400 text-slate-500 mt-0.5 truncate">
               {busy
                 ? STEPS[currentStep]
                 : "Multi-jurisdiction pgvector retrieval and cross-border conflict evaluation completed"}
@@ -83,8 +87,8 @@ export function ReasoningState({
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono dark:text-slate-400 text-slate-500">
-          <span>{isOpen ? "Hide" : "Show"}</span>
+        <div className="flex items-center gap-2 text-xs font-mono dark:text-slate-400 text-slate-500 shrink-0 ml-3">
+          <span className="hidden sm:inline">{isOpen ? "Hide process" : "Show process"}</span>
           <span className={`text-[10px] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
             ▼
           </span>
@@ -93,8 +97,8 @@ export function ReasoningState({
 
       {/* Expanded Reasoning Trace Steps */}
       {isOpen && (
-        <div className="px-5 pb-4 pt-1 border-t dark:border-slate-800/60 border-slate-200/80 animate-in fade-in duration-200">
-          <div className="space-y-2 mt-2">
+        <div className="px-5 pb-4 pt-2 border-t dark:border-slate-800/60 border-slate-200/80 animate-in fade-in duration-200">
+          <div className="space-y-2 mt-1">
             {STEPS.map((step, idx) => {
               const isDone = !busy || idx < currentStep;
               const isCurrent = busy && idx === currentStep;
@@ -111,7 +115,7 @@ export function ReasoningState({
                   }`}
                 >
                   <div className="size-4 flex items-center justify-center shrink-0">
-                    {isDone && <span className="text-emerald-500 dark:text-emerald-400 text-xs">✓</span>}
+                    {isDone && <span className="text-emerald-500 dark:text-emerald-400 text-xs font-bold">✓</span>}
                     {isCurrent && (
                       <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
                     )}
@@ -119,15 +123,16 @@ export function ReasoningState({
                       <span className="size-1.5 rounded-full bg-slate-700" />
                     )}
                   </div>
-                  <span>{step}</span>
+                  <span className="leading-relaxed">{step}</span>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-3.5 pt-2.5 border-t dark:border-slate-800/40 border-slate-200/60 flex items-center justify-between text-[10px] font-mono dark:text-slate-500 text-slate-400">
+          <div className="mt-3.5 pt-2.5 border-t dark:border-slate-800/40 border-slate-200/60 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono dark:text-slate-500 text-slate-400">
             <span>Retrieval model: BAAI/bge-base-en-v1.5</span>
-            <span>Index: PostgreSQL 16 HNSW (ef=40)</span>
+            <span>Index: PostgreSQL 16 HNSW (ef_search=40)</span>
+            <span>Grounding: 4-Tier Guardrails Active</span>
           </div>
         </div>
       )}

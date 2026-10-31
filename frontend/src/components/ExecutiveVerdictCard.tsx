@@ -31,7 +31,7 @@ export function ExecutiveVerdictCard({
   return (
     <section
       aria-label="Summary"
-      className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white/70 backdrop-blur-md p-5 sm:p-6 shadow-2xl"
+      className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-5 sm:p-6 shadow-xl"
     >
       {/* Top Banner: Status + Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b dark:border-slate-800/60 border-slate-200/80">

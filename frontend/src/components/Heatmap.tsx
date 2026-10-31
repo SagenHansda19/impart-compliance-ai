@@ -153,7 +153,7 @@ export function Heatmap({ a }: { a: Assessment }) {
   return (
     <section
       aria-label="Conflict heatmap"
-      className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white/70 backdrop-blur-md p-5 sm:p-6 shadow-2xl space-y-6"
+      className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-5 sm:p-6 shadow-xl space-y-6"
     >
       {/* 1. Header with Jupyter / Scientific Matrix Meta */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b dark:border-slate-800/60 border-slate-200/80">

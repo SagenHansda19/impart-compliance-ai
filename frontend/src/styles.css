@@ -39,7 +39,7 @@ html:not(.dark) body {
 }
 
 :focus-visible {
-  outline: 1.5px solid #64748b;
+  outline: 1.5px solid #475569;
   outline-offset: 2px;
 }
 
@@ -50,7 +50,14 @@ form,
 form:focus,
 form:focus-within {
   outline: none !important;
-  box-shadow: none;
+  box-shadow: none !important;
+}
+
+/* Neutral input focus styling: zero harsh green glow or white flash */
+textarea:focus,
+input:focus {
+  border-color: #475569 !important;
+  box-shadow: 0 0 0 1px rgba(71, 85, 105, 0.4) !important;
 }
 
 /* Custom subtle dark scrollbar */
@@ -59,12 +66,12 @@ form:focus-within {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(9, 13, 22, 0.8);
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #1e293b;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #334155;
 }

@@ -213,14 +213,14 @@ export default function App() {
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 min-w-0">
           {/* HISTORY VIEW */}
           {route.name === "history" && (
-            <div className="max-w-6xl mx-auto w-full py-2">
+            <div className="max-w-[1400px] mx-auto w-full py-2">
               <History onOpen={(id) => navigateTo(`#/a/${encodeURIComponent(id)}`)} />
             </div>
           )}
 
           {/* ITEM DETAIL VIEW */}
           {route.name === "item" && (
-            <div className="max-w-6xl mx-auto w-full space-y-6 pb-20">
+            <div className="max-w-[1400px] mx-auto w-full space-y-6 pb-20">
               <div className="flex items-center justify-between">
                 <button
                   type="button"
@@ -235,11 +235,11 @@ export default function App() {
 
               {item && (
                 <>
-                  <section className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white/70 backdrop-blur-md p-5 shadow-2xl">
+                  <section className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-5 shadow-xl">
                     <div className="text-[11px] font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 mb-2">
                       Evaluated Change Request
                     </div>
-                    <p className="font-mono text-[12px] dark:text-slate-200 text-slate-800 dark:bg-slate-900/60 bg-slate-50 p-4 rounded-lg border dark:border-slate-800/60 border-slate-200/80 leading-relaxed">
+                    <p className="font-mono text-[12px] dark:text-slate-200 text-slate-800 dark:bg-slate-900/60 bg-slate-50 p-4 rounded-xl border dark:border-slate-800/60 border-slate-200/80 leading-relaxed">
                       {item.change_request.text}
                     </p>
                   </section>
@@ -262,15 +262,16 @@ export default function App() {
 
           {/* MAIN CHAT / AUDIT WORKSPACE */}
           {route.name === "assess" && (
-            <div className="max-w-6xl mx-auto w-full space-y-6 pb-24">
+            <div className="max-w-[1400px] mx-auto w-full space-y-6 pb-24">
               {/* Error banner if present */}
               {error ? <ErrorBox error={error} /> : null}
 
               {/* 1. CHATGPT-STYLE USER PROMPT CHAT BUBBLE (Right-aligned) */}
               {(submittedPrompt || result?.change_request?.text) && (
                 <div className="flex justify-end animate-in fade-in duration-200">
-                  <div className="max-w-2xl rounded-2xl rounded-tr-xs px-5 py-3.5 dark:bg-emerald-600/15 bg-emerald-50 border dark:border-emerald-500/30 border-emerald-200/80 backdrop-blur-md shadow-lg">
-                    <div className="text-[11px] font-semibold uppercase tracking-wider dark:text-emerald-400 text-emerald-700 mb-1 flex items-center justify-end gap-1">
+                  <div className="max-w-2xl rounded-2xl rounded-tr-xs px-5 py-3.5 dark:bg-slate-900/90 bg-white/90 border dark:border-slate-800 border-slate-200/80 backdrop-blur-md shadow-md">
+                    <div className="text-[11px] font-semibold uppercase tracking-wider dark:text-emerald-400 text-emerald-700 mb-1 flex items-center justify-end gap-1.5 font-mono">
+                      <span className="size-1.5 rounded-full bg-emerald-500 inline-block" />
                       <span>Change Request Specification</span>
                     </div>
                     <p className="text-[13px] dark:text-slate-100 text-slate-800 leading-relaxed font-sans select-text">
@@ -322,7 +323,7 @@ export default function App() {
 
         {/* 3. CONVERSATIONAL FLOATING INPUT BOX (Aligned cleanly with content grid) */}
         {route.name === "assess" && (
-          <div className="shrink-0 px-4 sm:px-6 lg:px-8 pb-4">
+          <div className="shrink-0 px-4 sm:px-6 lg:px-8 pb-4 max-w-[1400px] mx-auto w-full">
             <ChatInputBar
               busy={busy}
               onSubmit={handleAssess}

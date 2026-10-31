@@ -39,10 +39,10 @@ export function AuditDrawer({ row, onClose }: AuditDrawerProps) {
       <div className="absolute inset-0" onClick={onClose} aria-hidden="true" />
 
       {/* Slide-over panel */}
-      <div className="relative w-full max-w-xl dark:bg-slate-900 bg-white border-l dark:border-slate-800 border-slate-200 shadow-2xl p-6 overflow-y-auto flex flex-col justify-between z-10 animate-in slide-in-from-right duration-250">
+      <div className="relative w-full max-w-xl dark:bg-slate-950 bg-white border-l dark:border-slate-800/80 border-slate-200/80 shadow-2xl p-6 overflow-y-auto flex flex-col justify-between z-10 animate-in slide-in-from-right duration-250">
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex items-start justify-between pb-4 border-b dark:border-slate-800 border-slate-200">
+          <div className="flex items-start justify-between pb-4 border-b dark:border-slate-800/80 border-slate-200">
             <div className="flex items-center gap-3">
               <span className="text-2xl">{flag}</span>
               <div>
@@ -59,7 +59,7 @@ export function AuditDrawer({ row, onClose }: AuditDrawerProps) {
             <button
               type="button"
               onClick={onClose}
-              className="cursor-pointer dark:text-slate-400 text-slate-500 hover:dark:text-white hover:text-slate-900 p-2 rounded-lg hover:dark:bg-slate-800 hover:bg-slate-100 transition-colors text-sm"
+              className="cursor-pointer dark:text-slate-400 text-slate-500 hover:dark:text-white hover:text-slate-900 p-2 rounded-lg hover:dark:bg-slate-900 hover:bg-slate-100 transition-colors text-sm"
               title="Close drawer (Esc)"
               aria-label="Close drawer"
             >
@@ -70,30 +70,30 @@ export function AuditDrawer({ row, onClose }: AuditDrawerProps) {
           {/* Rulebook Citation */}
           <div className="rounded-xl dark:bg-slate-900/60 bg-slate-50 border dark:border-slate-800/80 border-slate-200/80 p-4">
             <div className="flex items-center justify-between mb-1.5">
-              <div className="text-[11px] font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500">
+              <div className="text-[10px] font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500">
                 Official Rulebook Citation
               </div>
               <CitationBadge citation={citation} snippet={quote} regulation={row.regulation} />
             </div>
-            <div className="text-[13px] font-mono font-medium dark:text-emerald-300 text-emerald-700">
+            <div className="text-[13px] font-mono font-medium dark:text-emerald-400 text-emerald-700">
               {citation}
             </div>
           </div>
 
           {/* Verbatim Legal Evidence Quote */}
-          <div className="rounded-xl dark:bg-slate-900/40 bg-emerald-50/30 border border-emerald-500/30 p-5">
-            <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider dark:text-emerald-400 text-emerald-700 flex items-center gap-1.5">
+          <div className="rounded-xl dark:bg-slate-900/40 bg-slate-100/60 border dark:border-slate-800/80 border-slate-200 p-5 space-y-2">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider dark:text-emerald-400 text-emerald-700 flex items-center gap-1.5 font-sans">
                 <SparklesIcon className="size-3.5" />
                 Verified Legal Evidence Quote
               </span>
               {row.quote_verified && (
-                <span className="rounded dark:bg-emerald-950/60 bg-emerald-100 border dark:border-emerald-500/40 border-emerald-300 px-2 py-0.5 text-[10px] dark:text-emerald-300 text-emerald-800 font-mono">
+                <span className="rounded dark:bg-emerald-500/10 bg-emerald-100 border dark:border-emerald-500/30 border-emerald-300 px-2 py-0.5 text-[10px] dark:text-emerald-300 text-emerald-800 font-mono font-medium">
                   ✓ 100% Verbatim Match
                 </span>
               )}
             </div>
-            <blockquote className="dark:text-slate-200 text-slate-800 font-mono text-[12px] leading-relaxed italic whitespace-pre-wrap pl-3 border-l-2 border-emerald-500/50">
+            <blockquote className="dark:text-slate-200 text-slate-800 font-mono text-[12px] leading-relaxed italic whitespace-pre-wrap pl-3 border-l-2 border-emerald-500/60">
               “{quote}”
             </blockquote>
           </div>

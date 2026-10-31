@@ -105,8 +105,9 @@ export function AuditResultsTabs({
   return (
     <div className="space-y-6 w-full">
       {/* 1. TOP TAB NAVIGATION BAR (Sticky Full-Width Header) */}
-      <div className="sticky top-0 z-40 w-full backdrop-blur-md dark:bg-slate-900/90 bg-white/95 border-b dark:border-slate-800 border-slate-200 py-3 shadow-md">
+      <div className="sticky top-0 z-40 w-full backdrop-blur-xl dark:bg-[#090d16]/90 bg-white/95 border-b dark:border-slate-800 border-slate-200/80 py-2.5 shadow-sm transition-colors">
         <nav
+          role="tablist"
           aria-label="Audit Results Views"
           className="w-full"
         >
@@ -118,12 +119,16 @@ export function AuditResultsTabs({
               return (
                 <button
                   key={tab.id}
+                  id={`tab-${tab.id}`}
+                  role="tab"
                   type="button"
+                  aria-selected={isActive}
+                  aria-controls={`panel-${tab.id}`}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`cursor-pointer w-full flex-1 inline-flex items-center justify-center gap-2 rounded-xl px-3 sm:px-4 py-2.5 text-xs font-semibold transition-all duration-150 select-none shadow-xs ${
+                  className={`cursor-pointer w-full flex-1 inline-flex items-center justify-center gap-2 rounded-xl px-3 sm:px-4 py-2.5 text-xs font-semibold transition-all duration-150 select-none shadow-xs focus:outline-none ${
                     isActive
-                      ? "dark:bg-slate-800 bg-slate-100 dark:text-white text-slate-900 border dark:border-slate-700 border-slate-300 ring-1 dark:ring-emerald-500/20 ring-emerald-500/10"
-                      : "dark:text-slate-400 text-slate-600 hover:dark:text-slate-200 hover:text-slate-900 hover:dark:bg-slate-800/50 hover:bg-slate-100/70 border border-transparent"
+                      ? "dark:bg-slate-800/90 bg-slate-100 dark:text-white text-slate-900 border dark:border-slate-700/80 border-slate-300 ring-1 dark:ring-emerald-500/20 ring-emerald-500/10"
+                      : "dark:text-slate-400 text-slate-600 hover:dark:text-slate-200 hover:text-slate-900 hover:dark:bg-slate-900/60 hover:bg-slate-100/70 border border-transparent"
                   }`}
                 >
                   <Icon
@@ -136,7 +141,7 @@ export function AuditResultsTabs({
                     <span
                       className={`rounded px-1.5 py-0.5 text-[10px] font-mono shrink-0 ${
                         isActive
-                          ? "dark:bg-emerald-950/80 bg-emerald-100 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
+                          ? "dark:bg-emerald-950/80 bg-emerald-100 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 font-semibold"
                           : "dark:bg-slate-800/80 bg-slate-200/80 dark:text-slate-400 text-slate-600"
                       }`}
                     >
@@ -152,7 +157,9 @@ export function AuditResultsTabs({
 
       {/* 2. TAB 1: EXECUTIVE OVERVIEW (Verdict Card + Summary + Conflict Heatmap) */}
       <div
+        id="panel-overview"
         role="tabpanel"
+        aria-labelledby="tab-overview"
         aria-label="Executive Overview"
         className={activeTab === "overview" ? "space-y-6 block animate-in fade-in duration-150" : "hidden"}
       >
@@ -167,7 +174,7 @@ export function AuditResultsTabs({
         <Heatmap a={assessment} />
 
         {/* Quick Transition Banner */}
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white p-4 text-[12px]">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-4 text-[12px] shadow-sm">
           <div className="flex items-center gap-2 dark:text-slate-300 text-slate-700">
             <GlobeAltIcon className="size-4 text-emerald-500 dark:text-emerald-400" />
             <span>Need deeper legal citations and exact field specifications?</span>
@@ -185,11 +192,13 @@ export function AuditResultsTabs({
 
       {/* 3. TAB 2: JURISDICTION MATRIX (Detailed Multi-Regime Breakdown Cards) */}
       <div
+        id="panel-jurisdictions"
         role="tabpanel"
+        aria-labelledby="tab-jurisdictions"
         aria-label="Jurisdiction Matrix"
         className={activeTab === "jurisdictions" ? "space-y-6 block animate-in fade-in duration-150" : "hidden"}
       >
-        <div className="rounded-xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white p-5">
+        <div className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-5 shadow-sm">
           <div className="flex items-center justify-between pb-3 border-b dark:border-slate-800/60 border-slate-200/80">
             <div>
               <h3 className="text-sm font-bold dark:text-white text-slate-900 uppercase tracking-wider flex items-center gap-2">
@@ -200,7 +209,7 @@ export function AuditResultsTabs({
                 Detailed regulatory findings, candidate fields mapped from catalog, and official rulebook citations.
               </p>
             </div>
-            <span className="font-mono text-[11px] dark:text-slate-400 text-slate-600 dark:bg-slate-800 bg-slate-100 px-2.5 py-0.5 rounded-md border dark:border-slate-700 border-slate-200">
+            <span className="font-mono text-[11px] dark:text-slate-400 text-slate-600 dark:bg-slate-900 bg-slate-100 px-2.5 py-0.5 rounded-md border dark:border-slate-800 border-slate-200">
               {filteredRows.length} of {rows.length} Regimes
             </span>
           </div>
@@ -214,17 +223,19 @@ export function AuditResultsTabs({
 
       {/* 4. TAB 3: REASONING TRACE (Step-by-Step LLM Audit Trail) */}
       <div
+        id="panel-reasoning"
         role="tabpanel"
+        aria-labelledby="tab-reasoning"
         aria-label="Reasoning Trace"
         className={activeTab === "reasoning" ? "space-y-6 block animate-in fade-in duration-150" : "hidden"}
       >
         {cot ? (
-          <section className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white/70 backdrop-blur-md p-5 sm:p-6 shadow-2xl space-y-5">
+          <section className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-5 sm:p-6 shadow-xl space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b dark:border-slate-800/60 border-slate-200/80">
               <div>
                 <div className="flex items-center gap-2">
                   <SparklesIcon className="size-4 text-emerald-500 dark:text-emerald-400" />
-                  <h3 className="text-sm font-bold dark:text-white text-slate-900">Chain of Thought</h3>
+                  <h3 className="text-sm font-bold dark:text-white text-slate-900 tracking-tight">Chain of Thought</h3>
                 </div>
                 <p className="mt-1 text-[12px] dark:text-slate-400 text-slate-500">
                   Step-by-step regulatory decomposition and multi-regime deductive reasoning trace.
@@ -235,7 +246,7 @@ export function AuditResultsTabs({
                 <button
                   type="button"
                   onClick={() => setShowRawCot(!showRawCot)}
-                  className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border dark:border-slate-700 border-slate-300 dark:bg-slate-800 bg-slate-100 px-3 py-1.5 text-[11px] font-semibold dark:text-slate-300 text-slate-700 hover:dark:bg-slate-700 hover:bg-slate-200 transition-colors"
+                  className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border dark:border-slate-700/80 border-slate-300 dark:bg-slate-900 bg-slate-100 px-3 py-1.5 text-[11px] font-semibold dark:text-slate-300 text-slate-700 hover:dark:bg-slate-800 hover:bg-slate-200 transition-colors"
                 >
                   <span>{showRawCot ? "Hide Raw Trace" : "View Raw Trace"}</span>
                 </button>
@@ -243,7 +254,7 @@ export function AuditResultsTabs({
                 <button
                   type="button"
                   onClick={handleCopyReasoning}
-                  className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border dark:border-slate-700 border-slate-300 dark:bg-slate-800 bg-slate-100 px-3 py-1.5 text-[11px] font-semibold dark:text-slate-300 text-slate-700 hover:dark:text-white hover:text-slate-900 hover:dark:bg-slate-700 hover:bg-slate-200 transition-colors"
+                  className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border dark:border-slate-700/80 border-slate-300 dark:bg-slate-900 bg-slate-100 px-3 py-1.5 text-[11px] font-semibold dark:text-slate-300 text-slate-700 hover:dark:text-white hover:text-slate-900 hover:dark:bg-slate-800 hover:bg-slate-200 transition-colors"
                 >
                   <CopyIcon className="size-3.5" />
                   <span>{copied ? "Copied!" : "Copy Full Trace"}</span>
@@ -265,7 +276,7 @@ export function AuditResultsTabs({
                     return (
                       <div
                         key={i}
-                        className="rounded-lg border dark:border-slate-800/60 border-slate-200/80 dark:bg-slate-900/30 bg-slate-50/50 p-4 text-[13px] leading-relaxed transition-all"
+                        className="rounded-xl border dark:border-slate-800/60 border-slate-200/80 dark:bg-slate-900/30 bg-slate-50/60 p-4 text-[13px] leading-relaxed transition-all"
                       >
                         <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b dark:border-slate-800/60 border-slate-200/80">
                           <span className="font-bold dark:text-white text-slate-900 flex items-center gap-2">
@@ -305,14 +316,14 @@ export function AuditResultsTabs({
                 <div className="text-[11px] font-semibold uppercase tracking-wider dark:text-slate-400 text-slate-500 mb-2">
                   Raw Model Reasoning Prompt Output
                 </div>
-                <div className="font-mono text-[11px] dark:text-slate-300 text-slate-800 dark:bg-slate-900/60 bg-slate-100 p-4 rounded-lg border dark:border-slate-800/80 border-slate-200 leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto">
+                <div className="font-mono text-[11px] dark:text-slate-300 text-slate-800 dark:bg-slate-900/80 bg-slate-100 p-4 rounded-xl border dark:border-slate-800/80 border-slate-200 leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto">
                   {cot}
                 </div>
               </div>
             )}
           </section>
         ) : (
-          <div className="rounded-xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white p-8 text-center text-slate-500 text-[12px]">
+          <div className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-8 text-center text-slate-500 text-[12px] shadow-sm">
             No chain of thought reasoning trace recorded for this evaluation.
           </div>
         )}
@@ -320,12 +331,14 @@ export function AuditResultsTabs({
 
       {/* 5. TAB 4: COMPLEXITY & REQUIREMENTS (Atomic Requirements & Severity Spectrum) */}
       <div
+        id="panel-complexity"
         role="tabpanel"
+        aria-labelledby="tab-complexity"
         aria-label="Complexity & Requirements"
         className={activeTab === "complexity" ? "space-y-6 block animate-in fade-in duration-150" : "hidden"}
       >
         {/* Extracted Atomic Requirements */}
-        <section className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white/70 backdrop-blur-md p-5 sm:p-6 shadow-2xl">
+        <section className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-5 sm:p-6 shadow-xl">
           <div className="pb-4 border-b dark:border-slate-800/60 border-slate-200/80">
             <h3 className="text-sm font-bold dark:text-white text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <CpuChipIcon className="size-4 text-emerald-500 dark:text-emerald-400" />
@@ -341,17 +354,17 @@ export function AuditResultsTabs({
               reqs.map((r, i) => (
                 <div
                   key={r.id || i}
-                  className="rounded-lg border dark:border-slate-800/60 border-slate-200/80 dark:bg-slate-900/30 bg-slate-50/50 p-3.5 text-[12px] space-y-2"
+                  className="rounded-xl border dark:border-slate-800/60 border-slate-200/80 dark:bg-slate-900/30 bg-slate-50/60 p-3.5 text-[12px] space-y-2"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      <span className="rounded-md dark:bg-slate-800 bg-slate-200 border dark:border-slate-700 border-slate-300 px-2 py-0.5 font-mono text-[10px] font-bold dark:text-slate-200 text-slate-800">
+                      <span className="rounded-md dark:bg-slate-800 bg-slate-200 border dark:border-slate-700 border-slate-300 px-2 py-0.5 font-mono text-[10px] font-bold dark:text-emerald-400 text-emerald-700">
                         {r.id || `R${i + 1}`}
                       </span>
                       <span className="font-semibold dark:text-slate-200 text-slate-800">{r.concept}</span>
                     </div>
                     {r.required_max_length && (
-                      <span className="rounded dark:bg-slate-800 bg-amber-50 px-2 py-0.5 font-mono text-[10px] text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                      <span className="rounded dark:bg-slate-800 bg-amber-50 px-2 py-0.5 font-mono text-[10px] text-amber-700 dark:text-amber-300 border border-amber-500/30 font-semibold">
                         Max Length: {r.required_max_length}
                       </span>
                     )}
@@ -365,7 +378,7 @@ export function AuditResultsTabs({
                       {r.search_queries.map((q, qIdx) => (
                         <span
                           key={qIdx}
-                          className="rounded dark:bg-slate-800 bg-slate-200 px-2 py-0.5 font-mono text-[10px] dark:text-slate-400 text-slate-600"
+                          className="rounded dark:bg-slate-800/70 bg-slate-200 px-2 py-0.5 font-mono text-[10px] dark:text-slate-400 text-slate-600"
                         >
                           &ldquo;{q}&rdquo;
                         </span>
@@ -375,7 +388,7 @@ export function AuditResultsTabs({
                 </div>
               ))
             ) : (
-              <p className="text-slate-500 text-[12px] py-4 text-center">
+              <p className="text-slate-500 text-[12px] py-4 text-center font-mono">
                 No decomposed atomic requirements were generated.
               </p>
             )}
@@ -384,9 +397,9 @@ export function AuditResultsTabs({
 
         {/* Spectrum of Complexity */}
         {spectrum && spectrum.length > 0 && (
-          <section className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-900/40 bg-white/70 backdrop-blur-md p-5 sm:p-6 shadow-2xl">
+          <section className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-5 sm:p-6 shadow-xl">
             <div className="pb-4 border-b dark:border-slate-800/60 border-slate-200/80">
-              <h3 className="text-sm font-bold dark:text-white text-slate-900">Spectrum of Complexity</h3>
+              <h3 className="text-sm font-bold dark:text-white text-slate-900 tracking-tight">Spectrum of Complexity</h3>
               <p className="mt-1 text-[12px] dark:text-slate-400 text-slate-500">
                 Evaluation of regulatory edge cases, architectural complexity, and cross-border risks.
               </p>
@@ -396,12 +409,12 @@ export function AuditResultsTabs({
               {spectrum.map((s, idx) => (
                 <div
                   key={s.concept || idx}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border dark:border-slate-800/60 border-slate-200/80 dark:bg-slate-900/30 bg-slate-50/50 hover:dark:bg-slate-800/20 hover:bg-slate-100/50 transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border dark:border-slate-800/60 border-slate-200/80 dark:bg-slate-900/30 bg-slate-50/60 hover:dark:bg-slate-800/30 hover:bg-slate-100/60 transition-colors"
                 >
                   <span className="font-semibold dark:text-slate-200 text-slate-800 shrink-0">
                     {s.concept}
                   </span>
-                  <span className="dark:text-slate-400 text-slate-600 sm:text-right text-[11px]">
+                  <span className="dark:text-slate-400 text-slate-600 sm:text-right text-[11px] leading-relaxed">
                     {s.reason}
                   </span>
                 </div>

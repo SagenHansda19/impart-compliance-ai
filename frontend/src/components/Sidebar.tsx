@@ -48,7 +48,7 @@ export function Sidebar({
   return (
     <aside
       aria-label="Sidebar navigation"
-      className="w-72 border-r dark:border-slate-800/90 border-slate-200 dark:bg-slate-950/95 bg-slate-50/95 flex flex-col justify-between shrink-0 select-none z-30 transition-all duration-200 h-full"
+      className="w-72 border-r dark:border-slate-800/80 border-slate-200 dark:bg-[#090d16] bg-slate-50/95 flex flex-col justify-between shrink-0 select-none z-30 transition-all duration-200 h-full"
     >
       {/* Top Header & Actions */}
       <div className="p-4 flex flex-col gap-4">
