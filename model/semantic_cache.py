@@ -24,8 +24,8 @@ CACHE_DIR = Path(__file__).resolve().parent / ".semantic_cache"
 CACHE_FILE = CACHE_DIR / "cr_semantic_cache.json"
 REQ_CACHE_FILE = CACHE_DIR / "req_semantic_cache.json"
 
-DEFAULT_SIMILARITY_THRESHOLD = 0.96
-REQ_SIMILARITY_THRESHOLD = 0.95
+DEFAULT_SIMILARITY_THRESHOLD = float(os.getenv("SEMANTIC_CACHE_THRESHOLD", "0.90"))
+REQ_SIMILARITY_THRESHOLD = float(os.getenv("REQ_CACHE_THRESHOLD", "0.88"))
 
 
 def _normalize_text(text: str) -> str:
@@ -36,6 +36,22 @@ def _normalize_text(text: str) -> str:
     t = text.lower().strip()
     t = re.sub(r"\s+", " ", t)
     return t
+
+
+def _trigram_cosine(t1: str, t2: str) -> float:
+    """Zero-memory character trigram cosine similarity fallback."""
+    from collections import Counter
+    import math
+
+    def get_trigrams(t: str):
+        t = " " + t.lower().strip() + " "
+        return Counter([t[i : i + 3] for i in range(len(t) - 2)])
+
+    c1, c2 = get_trigrams(t1), get_trigrams(t2)
+    dot = sum(c1[k] * c2[k] for k in c1 if k in c2)
+    norm1 = math.sqrt(sum(v * v for v in c1.values()))
+    norm2 = math.sqrt(sum(v * v for v in c2.values()))
+    return dot / (norm1 * norm2) if norm1 and norm2 else 0.0
 
 
 def _extract_critical_tokens(text: str) -> set[str]:
@@ -127,8 +143,8 @@ class SemanticCache:
     def get_cr(self, cr_text: str, query_embedding: Optional[list[float]] = None) -> Optional[dict[str, Any]]:
         """Look up a Change Request in the semantic cache.
 
-        Checks exact hash first (< 0.1ms), then dense cosine similarity (>= 0.96)
-        with critical token guard (numbers, regulation acronyms, and constraints).
+        Checks exact hash first (< 0.1ms), then dense cosine similarity (>= 0.90)
+        or trigram similarity fallback (>= 0.75) with critical token guard.
         """
         if not self.enabled or not cr_text.strip():
             return None
@@ -149,32 +165,53 @@ class SemanticCache:
                     result["cached"] = True
                     result["cache_tier"] = "exact_cr"
                     result["similarity"] = 1.0
+                    if "timing" in result and isinstance(result["timing"], dict):
+                        result["timing"] = dict(result["timing"])
+                        result["timing"]["cache_hit"] = True
+                        result["timing"]["cache_tier"] = "exact_cr"
+                        result["timing"]["similarity"] = 1.0
+                        result["timing"]["total_ms"] = 2
                     return result
 
-            # 2. Semantic vector similarity pass
-            if query_embedding is None or not self._cr_entries:
+            # 2. Semantic similarity pass (Dense Embedding or Trigram Fallback)
+            if not self._cr_entries:
                 self.stats["misses"] += 1
                 return None
 
             best_match = None
             best_sim = -1.0
+            best_tier = "semantic_cr"
 
             for entry in self._cr_entries:
                 cached_emb = entry.get("embedding")
-                if not cached_emb:
+                cached_norm_text = entry.get("norm_text", "")
+
+                sim = -1.0
+                tier = "semantic_cr"
+
+                # If query_embedding and cached_emb exist, use dense vector similarity
+                if query_embedding is not None and cached_emb:
+                    sim = cosine_similarity(query_embedding, cached_emb)
+                    threshold = self.cr_threshold
+                elif cached_norm_text:
+                    # Lightweight trigram similarity fallback (zero RAM)
+                    sim = _trigram_cosine(norm, cached_norm_text)
+                    threshold = 0.75
+                    tier = "trigram_cr"
+                else:
                     continue
 
-                sim = cosine_similarity(query_embedding, cached_emb)
-                if sim >= self.cr_threshold and sim > best_sim:
+                if sim >= threshold and sim > best_sim:
                     # Guardrail: critical tokens (numbers, acronyms) must match exactly
                     cached_tokens = set(entry.get("critical_tokens", []))
                     if tokens == cached_tokens:
-                        # Length ratio check: lengths must be within +/- 25%
+                        # Length ratio check: lengths must be within +/- 30%
                         cached_len = entry.get("char_len", len(norm))
                         ratio = len(norm) / max(cached_len, 1)
-                        if 0.75 <= ratio <= 1.33:
+                        if 0.70 <= ratio <= 1.40:
                             best_sim = sim
                             best_match = entry
+                            best_tier = tier
 
             if best_match is not None:
                 self.stats["hits"] += 1
@@ -183,8 +220,14 @@ class SemanticCache:
                 self.stats["latency_saved_ms"] += saved_ms
                 result = dict(best_match["response"])
                 result["cached"] = True
-                result["cache_tier"] = "semantic_cr"
+                result["cache_tier"] = best_tier
                 result["similarity"] = round(best_sim, 4)
+                if "timing" in result and isinstance(result["timing"], dict):
+                    result["timing"] = dict(result["timing"])
+                    result["timing"]["cache_hit"] = True
+                    result["timing"]["cache_tier"] = best_tier
+                    result["timing"]["similarity"] = round(best_sim, 4)
+                    result["timing"]["total_ms"] = 5
                 return result
 
             self.stats["misses"] += 1
@@ -209,6 +252,7 @@ class SemanticCache:
 
         entry = {
             "exact_hash": exact_hash,
+            "norm_text": norm,
             "char_len": len(norm),
             "critical_tokens": tokens,
             "embedding": embedding,
