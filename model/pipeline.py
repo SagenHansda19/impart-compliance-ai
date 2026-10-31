@@ -20,7 +20,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from common import EXTRACT_MODEL, JUDGE_MODEL, MAPPING_MODE, N_VOTES, REGIONS, REGS, llm_json
+from guardrails import guardrail_engine
 from retrieval import chunks_by_field_name, fetch_chunks, field_catalog, hybrid_search
+from semantic_cache import semantic_cache
 
 DISCLAIMER = "AI-generated output. Requires human review."
 
@@ -796,44 +798,71 @@ def evaluate_cr_unified(cr_text: str, analysis: dict, regs: list, debug: bool = 
                 "total_ms": timings[reg] + inf_ms
             }
         })
-    return table
+    return table, evidences
 
 
 def evaluate_cr(cr_text: str, debug: bool = False) -> dict:
     t0 = time.time()
+
+    # 0. Check Tier 1 Semantic Cache (Exact + Dense Cosine >= 0.96)
+    cr_emb = None
+    try:
+        from common import embed_query
+        cr_emb = embed_query(cr_text)
+    except Exception:
+        pass
+
+    cached_res = semantic_cache.get_cr(cr_text, query_embedding=cr_emb)
+    if cached_res is not None:
+        return cached_res
+
     analysis = analyze_cr(cr_text)
     analysis_ms = int((time.time() - t0) * 1000)
 
     # 1. Attempt unified single-call evaluation across all active regulations
     table = None
+    evidences = {}
     try:
-        table = evaluate_cr_unified(cr_text, analysis, REGS, debug)
+        table, evidences = evaluate_cr_unified(cr_text, analysis, REGS, debug)
     except Exception as e:
         # 2. Seamless fallback to per-regulation execution if unified call fails
         def run(reg):
             try:
-                return evaluate_reg(reg, cr_text, analysis, debug)
+                t_row = evaluate_reg(reg, cr_text, analysis, debug)
+                return t_row, ("", {})
             except Exception as e_reg:
                 return {"regulation": reg, "compliant": "Error",
                         "reason_if_not_compliant": f"{type(e_reg).__name__}: {e_reg}",
                         "citation": "", "quote": "", "quote_verified": False, "votes": {}, "findings": [],
-                        "timing": {"retrieval_ms": 0, "inference_ms": 0, "total_ms": 0}}
+                        "timing": {"retrieval_ms": 0, "inference_ms": 0, "total_ms": 0}}, ("", {})
 
         with ThreadPoolExecutor(max_workers=len(REGS)) as ex:
-            table = list(ex.map(run, REGS))
+            results = list(ex.map(run, REGS))
+            table = [r[0] for r in results]
+            evidences = {r[0]["regulation"]: r[1] for r in results}
+
+    # 3. Post-RAG Compliance Guardrails
+    spectrum = spectrum_of_complexity(analysis["requirements"], table)
+    validated_table, guardrail_report = guardrail_engine.apply_guardrails(
+        compliance_table=table,
+        evidences=evidences,
+        spectrum=spectrum,
+    )
 
     cot = "\n".join(
         f"{t['regulation']}: " + " ".join(f"[{f['req_id']}={'OK' if f['supported'] else 'FAIL'}] {f.get('reasoning', '')}"
                                           for f in t["findings"])
-        for t in table)
+        for t in validated_table)
 
     total_ms = int((time.time() - t0) * 1000)
-    return {
+    res = {
         "disclaimer": DISCLAIMER,
         "timing": {
             "analysis_ms": analysis_ms,
             "total_ms": total_ms,
+            "cache_hit": False,
         },
+        "guardrails": guardrail_report,
         "cr_metadata": {
             "is_ambiguous": analysis["is_ambiguous"],
             "clarification_prompt": analysis["clarification_prompt"],
@@ -841,13 +870,21 @@ def evaluate_cr(cr_text: str, debug: bool = False) -> dict:
             "requirements": analysis["requirements"]
         },
         "chain_of_thought_explanation": cot,
-        "compliance_table": table,
-        "conflict_heatmap": heatmap(table),
-        "spectrum_of_complexity": spectrum_of_complexity(analysis["requirements"], table),
+        "compliance_table": validated_table,
+        "conflict_heatmap": heatmap(validated_table),
+        "spectrum_of_complexity": spectrum,
         "source_discrepancies": [
             {
                 "regulation": t["regulation"],
                 "source_values": t["source_values"]
-            } for t in table if t.get("sources_disagree")
+            } for t in validated_table if t.get("sources_disagree")
         ]
     }
+
+    # Store in semantic cache for subsequent requests
+    try:
+        semantic_cache.store_cr(cr_text, res, embedding=cr_emb)
+    except Exception:
+        pass
+
+    return res

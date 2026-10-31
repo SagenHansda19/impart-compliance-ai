@@ -8,6 +8,7 @@ v2/.llm_cache/
 model/.llm_cache/
 backend/.llm_cache/
 **/.llm_cache/
+**/.semantic_cache/
 .venv/
 eval_results.json
 *.db
