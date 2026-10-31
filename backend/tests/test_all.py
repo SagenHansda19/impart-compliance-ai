@@ -315,3 +315,27 @@ def test_http_model_cold_boot_retry_success(monkeypatch):
     assert res == {"disclaimer": "ok", "compliance_table": []}
     assert calls[0] == 2
 
+
+def test_http_model_429_rate_limit_retry(monkeypatch):
+    import httpx
+    import time
+    from app.config import settings
+    from app.model_client import HttpModel
+
+    monkeypatch.setattr(settings, "model_retries", 2)
+    monkeypatch.setattr(settings, "model_cold_boot_retries", 3)
+    monkeypatch.setattr(time, "sleep", lambda s: None)
+
+    calls = [0]
+    def fake_post(*a, **k):
+        calls[0] += 1
+        if calls[0] == 1:
+            return httpx.Response(429, headers={"Retry-After": "1"}, json={"detail": "Too Many Requests"})
+        return httpx.Response(200, json={"disclaimer": "ok", "compliance_table": []})
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    res = HttpModel().call("test cr text")
+    assert res == {"disclaimer": "ok", "compliance_table": []}
+    assert calls[0] == 2
+
+

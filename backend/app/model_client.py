@@ -34,10 +34,20 @@ def get_model_health_url() -> str:
     return f"{parsed.scheme}://{parsed.netloc}/health"
 
 
-def ping_model_service_sync() -> None:
+_last_model_ping: float = 0.0
+_PING_INTERVAL_S: float = 300.0  # limit to at most once per 5 minutes to prevent provider 429s
+
+
+def ping_model_service_sync(force: bool = False) -> None:
     """Fire-and-forget synchronous ping to trigger the model service container wake-up."""
+    global _last_model_ping
     if settings.model_mode != "http":
         return
+    now = time.time()
+    if not force and (now - _last_model_ping < _PING_INTERVAL_S):
+        return
+    _last_model_ping = now
+
     health_url = get_model_health_url()
     if not health_url:
         return
@@ -50,13 +60,13 @@ def ping_model_service_sync() -> None:
         logger.debug("Model warmup ping completed with status/transient response: %s", e)
 
 
-async def wake_model_service() -> None:
+async def wake_model_service(force: bool = False) -> None:
     """Non-blocking background ping used on startup lifespan."""
     if settings.model_mode != "http":
         return
     import asyncio
     loop = asyncio.get_running_loop()
-    await loop.run_in_executor(None, ping_model_service_sync)
+    await loop.run_in_executor(None, lambda: ping_model_service_sync(force=force))
 
 
 class ModelCallError(Exception):
@@ -101,6 +111,7 @@ class HttpModel:
 
         for attempt in range(max_retries + 1):
             is_cold_boot = False
+            r = None
             try:
                 r = httpx.post(settings.model_url, json={settings.model_request_field: cr_text},
                                headers=headers, timeout=settings.model_timeout_s)
@@ -110,8 +121,9 @@ class HttpModel:
                 last, code = f"connection failed: {type(e).__name__}", "model_unreachable"
                 is_cold_boot = True
             else:
-                if r.status_code in (502, 503, 504):
-                    last, code = f"model service returned {r.status_code}{_detail(r)}", "model_unavailable"
+                if r.status_code in (429, 502, 503, 504):
+                    last = f"model service returned {r.status_code}{_detail(r)}"
+                    code = "model_rate_limited" if r.status_code == 429 else "model_unavailable"
                     is_cold_boot = True
                 elif r.status_code >= 500:
                     last, code = f"model service returned {r.status_code}{_detail(r)}", "model_unavailable"
@@ -125,8 +137,12 @@ class HttpModel:
 
             if attempt < max_retries:
                 if is_cold_boot:
-                    sleep_s = 4.0 if attempt > 2 else 2.5
-                    logger.info("Model service is waking up (%s). Retrying in %.1fs (attempt %d/%d)...",
+                    retry_hdr = r.headers.get("Retry-After") if r is not None else None
+                    if retry_hdr and retry_hdr.replace(".", "", 1).isdigit():
+                        sleep_s = max(float(retry_hdr), 2.5)
+                    else:
+                        sleep_s = 4.0 if attempt > 2 else 2.5
+                    logger.info("Model service is warming up or rate-limited (%s). Retrying in %.1fs (attempt %d/%d)...",
                                 last, sleep_s, attempt + 1, max_retries)
                     time.sleep(sleep_s)
                     continue
