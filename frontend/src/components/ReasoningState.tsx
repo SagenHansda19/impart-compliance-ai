@@ -43,18 +43,18 @@ export function ReasoningState({
     externalElapsed !== undefined ? externalElapsed.toFixed(1) : internalElapsed.toFixed(1);
 
   return (
-    <div className="w-full rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md shadow-xl transition-all duration-300 overflow-hidden">
-      {/* Header Button: ChatGPT/Claude o1 Style Collapsible Thinking Indicator */}
+    <div className="w-full rounded-lg border dark:border-slate-800/90 border-slate-200/90 dark:bg-slate-950/70 bg-white/90 backdrop-blur-md shadow-xs transition-all duration-150 overflow-hidden">
+      {/* Header Button: Linear / o1 Style Collapsible Thinking Indicator */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full cursor-pointer px-5 py-3.5 flex items-center justify-between text-left hover:dark:bg-slate-900/40 hover:bg-slate-100/60 transition-colors select-none focus:outline-none"
+        className="w-full cursor-pointer px-4 py-3 flex items-center justify-between text-left hover:dark:bg-slate-900/40 hover:bg-slate-100/60 transition-colors select-none focus:outline-none"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-3 min-w-0">
-          <div className="relative flex size-8 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 shadow-inner">
+          <div className="relative flex size-7 shrink-0 items-center justify-center rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 shadow-inner">
             {busy ? (
-              <SparklesIcon className="size-4 animate-spin text-emerald-400" />
+              <SparklesIcon className="size-3.5 animate-spin text-emerald-400" />
             ) : (
               <span className="text-emerald-400 font-bold text-xs">✓</span>
             )}
@@ -62,10 +62,10 @@ export function ReasoningState({
 
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-bold dark:text-white text-slate-900 tracking-tight">
-                Reasoning & Verification Process
+              <span className="text-xs font-bold dark:text-white text-slate-900 tracking-tight font-mono">
+                Reasoning & Vector Audit Trace
               </span>
-              <span className="font-mono text-[11px] dark:text-slate-400 text-slate-500 rounded px-1.5 py-0.2 dark:bg-slate-900 bg-slate-100 border dark:border-slate-800 border-slate-200">
+              <span className="font-mono text-[11px] tabular-nums dark:text-slate-400 text-slate-500 rounded px-1.5 py-0.2 dark:bg-slate-900 bg-slate-100 border dark:border-slate-800 border-slate-200">
                 {busy ? `${displayTime}s` : `Completed in ${displayTime}s`}
               </span>
               {busy ? (
@@ -75,11 +75,11 @@ export function ReasoningState({
                 </span>
               ) : (
                 <span className="text-[10px] font-mono text-emerald-500 dark:text-emerald-400 font-medium">
-                  Verified
+                  ✓ Verified
                 </span>
               )}
             </div>
-            <p className="text-[11px] dark:text-slate-400 text-slate-500 mt-0.5 truncate">
+            <p className="text-[11px] dark:text-slate-400 text-slate-500 mt-0.5 truncate font-sans">
               {busy
                 ? STEPS[currentStep]
                 : "Multi-jurisdiction pgvector retrieval and cross-border conflict evaluation completed"}
@@ -88,49 +88,53 @@ export function ReasoningState({
         </div>
 
         <div className="flex items-center gap-2 text-xs font-mono dark:text-slate-400 text-slate-500 shrink-0 ml-3">
-          <span className="hidden sm:inline">{isOpen ? "Hide process" : "Show process"}</span>
-          <span className={`text-[10px] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
+          <span className="hidden sm:inline text-[11px]">{isOpen ? "Hide trace" : "Show trace"}</span>
+          <span className={`text-[10px] transition-transform duration-150 ${isOpen ? "rotate-180" : ""}`}>
             ▼
           </span>
         </div>
       </button>
 
-      {/* Expanded Reasoning Trace Steps */}
+      {/* Expanded Reasoning Trace Steps with Linear-style Step Badges */}
       {isOpen && (
-        <div className="px-5 pb-4 pt-2 border-t dark:border-slate-800/60 border-slate-200/80 animate-in fade-in duration-200">
-          <div className="space-y-2 mt-1">
+        <div className="px-4 pb-3.5 pt-2 border-t dark:border-slate-800/80 border-slate-200/80 animate-in fade-in duration-150">
+          <div className="space-y-1.5 mt-1">
             {STEPS.map((step, idx) => {
               const isDone = !busy || idx < currentStep;
               const isCurrent = busy && idx === currentStep;
+              const stepNumber = String(idx + 1).padStart(2, "0");
 
               return (
                 <div
                   key={step}
-                  className={`flex items-center gap-3 text-[12px] font-mono transition-opacity duration-300 ${
+                  className={`flex items-center gap-2.5 text-[11px] font-mono transition-opacity duration-150 rounded px-2 py-1 ${
                     isDone
-                      ? "dark:text-slate-300 text-slate-700"
+                      ? "dark:text-slate-300 text-slate-700 dark:bg-slate-900/30 bg-slate-50"
                       : isCurrent
-                      ? "dark:text-emerald-300 text-emerald-700 font-semibold"
-                      : "dark:text-slate-600 text-slate-400 opacity-60"
+                      ? "dark:text-emerald-300 text-emerald-700 font-semibold dark:bg-emerald-950/20 bg-emerald-50/50 border border-emerald-500/20"
+                      : "dark:text-slate-600 text-slate-400 opacity-50"
                   }`}
                 >
-                  <div className="size-4 flex items-center justify-center shrink-0">
-                    {isDone && <span className="text-emerald-500 dark:text-emerald-400 text-xs font-bold">✓</span>}
-                    {isCurrent && (
-                      <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
-                    )}
-                    {!isDone && !isCurrent && (
-                      <span className="size-1.5 rounded-full bg-slate-700" />
-                    )}
-                  </div>
-                  <span className="leading-relaxed">{step}</span>
+                  <span className={`text-[10px] tabular-nums font-bold px-1 rounded ${
+                    isDone
+                      ? "text-emerald-500 dark:text-emerald-400"
+                      : isCurrent
+                      ? "text-emerald-400 bg-emerald-500/20"
+                      : "text-slate-600"
+                  }`}>
+                    {isDone ? "✓" : stepNumber}
+                  </span>
+                  <span className="leading-relaxed flex-1">{step}</span>
+                  {isCurrent && (
+                    <span className="size-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                  )}
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-3.5 pt-2.5 border-t dark:border-slate-800/40 border-slate-200/60 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono dark:text-slate-500 text-slate-400">
-            <span>Retrieval model: BAAI/bge-base-en-v1.5</span>
+          <div className="mt-3 pt-2 border-t dark:border-slate-800/60 border-slate-200/60 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono tabular-nums dark:text-slate-500 text-slate-400">
+            <span>Model: BAAI/bge-base-en-v1.5</span>
             <span>Index: PostgreSQL 16 HNSW (ef_search=40)</span>
             <span>Grounding: 4-Tier Guardrails Active</span>
           </div>
@@ -139,3 +143,4 @@ export function ReasoningState({
     </div>
   );
 }
+

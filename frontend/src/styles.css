@@ -39,8 +39,8 @@ html:not(.dark) body {
 }
 
 :focus-visible {
-  outline: 1.5px solid #475569;
-  outline-offset: 2px;
+  outline: 1.5px solid #64748b;
+  outline-offset: 1px;
 }
 
 #cr-input,
@@ -53,24 +53,43 @@ form:focus-within {
   box-shadow: none !important;
 }
 
+/* Tabular Numerals across all mono, badges, and metrics */
+.tabular-nums,
+[data-tabular="true"],
+.font-mono {
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.01em;
+}
+
 /* Neutral input focus styling: zero harsh green glow or white flash */
 textarea:focus,
 input:focus {
-  border-color: #475569 !important;
-  box-shadow: 0 0 0 1px rgba(71, 85, 105, 0.4) !important;
+  border-color: #64748b !important;
+  box-shadow: 0 0 0 1px rgba(100, 116, 139, 0.35) !important;
+}
+
+/* Precision micro-transitions */
+button,
+a,
+input,
+select,
+textarea {
+  transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Custom subtle dark scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(9, 13, 22, 0.8);
+  background: rgba(9, 13, 22, 0.85);
 }
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
-  border-radius: 9999px;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;

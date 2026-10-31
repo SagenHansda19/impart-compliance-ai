@@ -122,11 +122,11 @@ export function CitationBadge({
         <div
           role="dialog"
           aria-label="Citation Details"
-          className="absolute z-50 bottom-full left-0 mb-2 w-80 sm:w-96 rounded-xl border border-slate-700/80 bg-slate-900/98 p-4 shadow-2xl shadow-black/80 backdrop-blur-md text-left text-slate-200 text-xs animate-in fade-in zoom-in-95 duration-150"
+          className="absolute z-50 bottom-full left-0 mb-2 w-80 sm:w-96 rounded-md border border-slate-700/90 bg-slate-900/98 p-3.5 shadow-2xl shadow-black/80 backdrop-blur-md text-left text-slate-200 text-xs animate-in fade-in zoom-in-95 duration-150"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Popover Header */}
-          <div className="flex items-center justify-between pb-2.5 border-b border-slate-800">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
             <div className="flex items-center gap-1.5 font-bold text-white text-[12px]">
               <SparklesIcon className="size-3.5 text-emerald-400" />
               <span>pgvector Verbatim Chunk</span>
@@ -143,7 +143,7 @@ export function CitationBadge({
                 setIsOpen(false);
                 setIsHovered(false);
               }}
-              className="cursor-pointer text-slate-400 hover:text-white p-1 rounded hover:bg-slate-800 transition-colors text-xs"
+              className="cursor-pointer text-slate-400 hover:text-white p-1 rounded hover:bg-slate-800 transition-colors text-xs font-mono"
               title="Close popover"
             >
               ✕
@@ -151,8 +151,8 @@ export function CitationBadge({
           </div>
 
           {/* Exact Verbatim Snippet from pgvector */}
-          <div className="my-3">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
+          <div className="my-2.5">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between font-mono">
               <span>Verified Rulebook Excerpt</span>
               {snippet && (
                 <span className="text-[10px] text-emerald-400 font-mono">
@@ -161,11 +161,11 @@ export function CitationBadge({
               )}
             </div>
             {snippet ? (
-              <blockquote className="rounded-lg bg-slate-950/80 border-l-2 border-emerald-500/60 p-2.5 font-mono text-[11px] text-slate-200 leading-relaxed italic max-h-48 overflow-y-auto whitespace-pre-wrap">
+              <blockquote className="rounded-md bg-slate-950/80 border-l-2 border-emerald-500/60 p-2.5 font-mono text-[11px] text-slate-200 leading-relaxed italic max-h-48 overflow-y-auto whitespace-pre-wrap">
                 “{snippet}”
               </blockquote>
             ) : (
-              <div className="rounded-lg bg-slate-950/60 p-2.5 font-mono text-[11px] text-slate-400 italic">
+              <div className="rounded-md bg-slate-950/60 p-2.5 font-mono text-[11px] text-slate-400 italic">
                 Exact text segment linked at {pillText}. Open Audit Drawer for chunk decomposition.
               </div>
             )}
@@ -173,7 +173,7 @@ export function CitationBadge({
 
           {/* Full Official Source Citation Path */}
           <div className="pt-2 border-t border-slate-800/80">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-0.5">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-0.5 font-mono">
               Official Source Path
             </div>
             <div className="font-mono text-[11px] text-slate-300 break-words bg-slate-950/50 p-1.5 rounded border border-slate-800/60 select-all">
@@ -182,11 +182,11 @@ export function CitationBadge({
           </div>
 
           {/* Popover Actions */}
-          <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-800/60 text-[11px]">
+          <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-slate-800/60 text-[11px]">
             <button
               type="button"
               onClick={handleCopy}
-              className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 px-2.5 py-1 text-slate-300 hover:text-white transition-colors"
+              className="cursor-pointer inline-flex items-center gap-1.5 rounded-md bg-slate-800 hover:bg-slate-750 border border-slate-700 px-2.5 py-1 text-slate-300 hover:text-white transition-colors font-mono"
             >
               <CopyIcon className="size-3" />
               <span>{copied ? "Copied!" : "Copy Snippet"}</span>

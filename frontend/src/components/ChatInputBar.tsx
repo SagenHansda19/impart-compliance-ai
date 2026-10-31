@@ -76,30 +76,30 @@ export function ChatInputBar({
 
   return (
     <div
-      className={`w-full max-w-6xl mx-auto transition-all duration-300 ${
-        isInitialCentered ? "py-4" : "sticky bottom-4 z-20"
+      className={`w-full max-w-6xl mx-auto transition-all duration-150 ${
+        isInitialCentered ? "py-4" : "sticky bottom-3 z-20"
       }`}
     >
       {/* Suggestions when empty and centered */}
       {isInitialCentered && !text && (
-        <div className="mb-6 text-center">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 mx-auto mb-3 shadow-inner">
-            <SparklesIcon className="size-6" />
+        <div className="mb-6 text-center animate-in fade-in duration-150">
+          <div className="flex size-10 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 mx-auto mb-3 shadow-inner">
+            <SparklesIcon className="size-5" />
           </div>
-          <h2 className="text-xl font-bold dark:text-white text-slate-900 tracking-tight">
-            What regulatory change are you evaluating?
+          <h2 className="text-lg font-bold dark:text-white text-slate-900 tracking-tight font-mono">
+            Regulatory Query Builder
           </h2>
-          <p className="mt-1.5 text-[13px] dark:text-slate-400 text-slate-600 max-w-md mx-auto">
-            Enter proposed business or technical changes in plain English. The AI engine cross-checks 5 jurisdictions simultaneously.
+          <p className="mt-1 text-[12px] dark:text-slate-400 text-slate-600 max-w-lg mx-auto">
+            Input business changes or trade reporting specifications in natural language. IMPART decomposes technical assertions and cross-checks 5 jurisdictions simultaneously.
           </p>
 
-          <div className="mt-6 flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
+          <div className="mt-5 flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
             {NATURAL_SUGGESTIONS.map((s) => (
               <button
                 key={s.label}
                 type="button"
                 onClick={() => setText(s.text)}
-                className="cursor-pointer rounded-xl border dark:border-slate-800 border-slate-200 dark:bg-slate-900/80 bg-white hover:dark:bg-slate-800/90 hover:bg-slate-50 hover:dark:border-slate-700 hover:border-slate-300 px-3 py-2 text-[12px] dark:text-slate-300 text-slate-700 hover:dark:text-white hover:text-slate-900 transition-all duration-150 text-left shadow-sm"
+                className="cursor-pointer rounded-md border dark:border-slate-800/90 border-slate-200/90 dark:bg-slate-900/80 bg-white hover:dark:bg-slate-800 hover:bg-slate-50 hover:dark:border-slate-700 hover:border-slate-300 px-3 py-2 text-[11px] dark:text-slate-300 text-slate-700 hover:dark:text-white hover:text-slate-900 transition-all duration-150 text-left shadow-2xs font-sans"
               >
                 <span>💡 {s.label}</span>
               </button>
@@ -108,12 +108,27 @@ export function ChatInputBar({
         </div>
       )}
 
-      {/* Fluid Glassmorphic Input Container */}
+      {/* Elite Query Builder Command Bar */}
       <form
         onSubmit={handleSubmit}
-        className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/70 bg-white/90 backdrop-blur-xl shadow-xl p-3.5 focus-within:border-slate-600 focus-within:ring-1 focus-within:ring-slate-600/50 transition-all duration-150"
+        className="rounded-lg border dark:border-slate-800/90 border-slate-200/90 dark:bg-slate-950/80 bg-white/95 backdrop-blur-md shadow-md p-3.5 focus-within:border-slate-600/90 transition-all duration-150"
       >
-        <div className="relative flex items-end gap-2">
+        {/* Command Bar Meta Bar */}
+        <div className="flex items-center justify-between pb-2 mb-1.5 border-b dark:border-slate-800/60 border-slate-200/60 text-[10px] font-mono dark:text-slate-500 text-slate-400">
+          <div className="flex items-center gap-1.5">
+            <span className="size-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+            <span className="font-semibold uppercase tracking-wider text-slate-400">
+              Query Workspace · Multi-Regime Grounded Evaluation
+            </span>
+          </div>
+          <div className="hidden sm:flex items-center gap-2 tabular-nums">
+            <span>BAAI/bge-base-en-v1.5</span>
+            <span>·</span>
+            <span>pgvector HNSW</span>
+          </div>
+        </div>
+
+        <div className="relative flex items-end gap-2.5">
           <textarea
             ref={textareaRef}
             id="cr-input"
@@ -123,23 +138,23 @@ export function ChatInputBar({
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={busy}
-            placeholder="Type the change request in plain English... (Press Enter to submit, Shift+Enter for newline)"
-            className="w-full resize-none bg-transparent px-2 py-1 text-[13px] dark:text-slate-100 text-slate-900 dark:placeholder:text-slate-500 placeholder:text-slate-400 focus:outline-none focus:ring-0 outline-none border-none leading-relaxed max-h-[180px] overflow-y-auto"
+            placeholder="Type the change request in plain English... (e.g. 'We are introducing separate collateral portfolios for IM and VM across all OTC derivative trades')"
+            className="w-full resize-none bg-transparent px-1.5 py-1 text-[13px] dark:text-slate-100 text-slate-900 dark:placeholder:text-slate-500 placeholder:text-slate-400 focus:outline-none focus:ring-0 outline-none border-none leading-relaxed max-h-[180px] overflow-y-auto font-sans"
           />
 
           <button
             type="submit"
             disabled={busy}
-            className="cursor-pointer shrink-0 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500 text-white px-3.5 py-2 flex items-center justify-center transition-all active:scale-95 shadow-xs font-semibold"
+            className="cursor-pointer shrink-0 rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-200 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500 text-white px-3.5 py-2 flex items-center justify-center transition-all enabled:active:scale-[0.98] shadow-2xs font-semibold"
             title="Assess impact (Enter)"
             aria-label="Assess impact"
           >
             {busy ? (
               <ArrowPathIcon className="size-4 animate-spin" />
             ) : (
-              <span className="text-xs font-semibold flex items-center gap-1.5">
+              <span className="text-xs font-semibold flex items-center gap-1.5 font-mono">
                 <span>Assess impact</span>
-                <span>↑</span>
+                <span>↵</span>
               </span>
             )}
           </button>
@@ -148,7 +163,7 @@ export function ChatInputBar({
         {/* Bottom Controls Bar: Jurisdiction Selector */}
         <div className="mt-2.5 pt-2 border-t dark:border-slate-800/80 border-slate-200/80 flex flex-wrap items-center justify-between gap-2 text-[11px] dark:text-slate-400 text-slate-500">
           <div className="flex items-center gap-1.5">
-            <span className="dark:text-slate-500 text-slate-400 mr-1">Regimes:</span>
+            <span className="dark:text-slate-500 text-slate-400 mr-0.5 text-[10px] uppercase font-mono">Scope:</span>
             {JURISDICTIONS.map((j) => {
               const active = selectedRegs.includes(j.code);
               return (
@@ -156,7 +171,7 @@ export function ChatInputBar({
                   key={j.code}
                   type="button"
                   onClick={() => onToggleReg(j.code)}
-                  className={`cursor-pointer rounded-md px-2 py-0.5 font-medium transition-colors focus:outline-none focus:ring-0 outline-none ${
+                  className={`cursor-pointer rounded px-2 py-0.5 font-mono text-[10px] transition-colors focus:outline-none focus:ring-0 outline-none ${
                     active
                       ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-semibold"
                       : "dark:bg-slate-800/40 bg-slate-100 dark:text-slate-400 text-slate-600 border dark:border-slate-800 border-slate-200 hover:dark:text-slate-200 hover:text-slate-900"
@@ -169,11 +184,15 @@ export function ChatInputBar({
             })}
           </div>
 
-          <div className="text-[10px] text-slate-500 font-mono hidden sm:inline-block">
-            <span>Enter to send · Shift+Enter for newline</span>
+          <div className="text-[10px] text-slate-500 font-mono hidden sm:inline-block tabular-nums">
+            <span className="rounded bg-slate-800/40 px-1.5 py-0.5 border border-slate-800 mr-1">Enter ↵</span>
+            <span className="mr-2">to evaluate</span>
+            <span className="rounded bg-slate-800/40 px-1.5 py-0.5 border border-slate-800 mr-1">Shift+Enter</span>
+            <span>newline</span>
           </div>
         </div>
       </form>
     </div>
   );
 }
+

@@ -235,11 +235,11 @@ export default function App() {
 
               {item && (
                 <>
-                  <section className="rounded-2xl border dark:border-slate-800/80 border-slate-200/80 dark:bg-slate-950/60 bg-white/80 backdrop-blur-md p-5 shadow-xl">
-                    <div className="text-[11px] font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 mb-2">
+                  <section className="rounded-lg border dark:border-slate-800/90 border-slate-200/90 dark:bg-slate-950/70 bg-white/90 backdrop-blur-md p-4 shadow-xs">
+                    <div className="text-[10px] font-bold uppercase tracking-wider dark:text-slate-400 text-slate-500 mb-1.5 font-mono">
                       Evaluated Change Request
                     </div>
-                    <p className="font-mono text-[12px] dark:text-slate-200 text-slate-800 dark:bg-slate-900/60 bg-slate-50 p-4 rounded-xl border dark:border-slate-800/60 border-slate-200/80 leading-relaxed">
+                    <p className="font-mono text-xs dark:text-slate-200 text-slate-800 dark:bg-slate-900/60 bg-slate-50 p-3.5 rounded-md border dark:border-slate-800/70 border-slate-200/80 leading-relaxed">
                       {item.change_request.text}
                     </p>
                   </section>
@@ -262,15 +262,15 @@ export default function App() {
 
           {/* MAIN CHAT / AUDIT WORKSPACE */}
           {route.name === "assess" && (
-            <div className="max-w-[1400px] mx-auto w-full space-y-6 pb-24">
+            <div className="max-w-[1400px] mx-auto w-full space-y-5 pb-24">
               {/* Error banner if present */}
               {error ? <ErrorBox error={error} /> : null}
 
-              {/* 1. CHATGPT-STYLE USER PROMPT CHAT BUBBLE (Right-aligned) */}
+              {/* 1. QUERY BUILDER PROMPT BUBBLE (Right-aligned Command Execution Box) */}
               {(submittedPrompt || result?.change_request?.text) && (
-                <div className="flex justify-end animate-in fade-in duration-200">
-                  <div className="max-w-2xl rounded-2xl rounded-tr-xs px-5 py-3.5 dark:bg-slate-900/90 bg-white/90 border dark:border-slate-800 border-slate-200/80 backdrop-blur-md shadow-md">
-                    <div className="text-[11px] font-semibold uppercase tracking-wider dark:text-emerald-400 text-emerald-700 mb-1 flex items-center justify-end gap-1.5 font-mono">
+                <div className="flex justify-end animate-in fade-in duration-150">
+                  <div className="max-w-2xl rounded-lg px-4 py-3 dark:bg-slate-900/95 bg-white/95 border dark:border-slate-800/90 border-slate-200/90 backdrop-blur-md shadow-xs">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider dark:text-emerald-400 text-emerald-700 mb-1 flex items-center justify-end gap-1.5 font-mono">
                       <span className="size-1.5 rounded-full bg-emerald-500 inline-block" />
                       <span>Change Request Specification</span>
                     </div>
@@ -292,22 +292,22 @@ export default function App() {
 
               {/* 3. Ambiguous Clarification State */}
               {result && result.status === "needs_clarification" && (
-                <div className="rounded-2xl border border-amber-500/40 bg-amber-950/30 backdrop-blur-md p-6 shadow-xl text-slate-100">
-                  <h3 className="text-base font-bold text-amber-300">
+                <div className="rounded-lg border border-amber-500/40 bg-amber-950/30 backdrop-blur-md p-5 shadow-xs text-slate-100">
+                  <h3 className="text-sm font-bold text-amber-300 font-mono">
                     Clarification Required
                   </h3>
-                  <p className="mt-2 text-[13px] text-slate-200 font-medium">
+                  <p className="mt-1.5 text-[13px] text-slate-200 font-medium">
                     {result.clarification_prompt || "Which field should change?"}
                   </p>
-                  <p className="mt-3 text-[11px] text-slate-400 font-mono">
-                    Please provide more details in the input box below to complete the audit.
+                  <p className="mt-2.5 text-[10px] text-slate-400 font-mono">
+                    Please provide more details in the query input below to complete the audit.
                   </p>
                 </div>
               )}
 
               {/* 4. Progressive Disclosure Audit Results */}
               {result && result.status !== "needs_clarification" && (
-                <div className="animate-in fade-in duration-300">
+                <div className="animate-in fade-in duration-150">
                   <AuditResultsTabs
                     assessment={result}
                     filteredRows={filteredRows}
