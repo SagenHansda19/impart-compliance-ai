@@ -267,3 +267,51 @@ def test_http_model_passes_on_the_services_explanation(monkeypatch):
     with pytest.raises(ModelCallError) as e:
         HttpModel().call("x")
     assert e.value.code == "model_rejected" and "cr_text is empty" in e.value.message
+
+
+def test_get_model_health_url():
+    from app.config import settings
+    from app.model_client import get_model_health_url
+    old = settings.model_url
+    try:
+        settings.model_url = "https://impart-model-service.onrender.com/api/evaluate"
+        assert get_model_health_url() == "https://impart-model-service.onrender.com/health"
+        settings.model_url = "http://localhost:8001/api/evaluate"
+        assert get_model_health_url() == "http://localhost:8001/health"
+    finally:
+        settings.model_url = old
+
+
+def test_ping_model_service_sync_handles_exceptions(monkeypatch):
+    import httpx
+    from app.config import settings
+    from app.model_client import ping_model_service_sync
+    monkeypatch.setattr(settings, "model_mode", "http")
+    monkeypatch.setattr(settings, "model_url", "http://localhost:8001/api/evaluate")
+    # Simulate network failure during container wake-up: should swallow exception gracefully
+    monkeypatch.setattr(httpx.Client, "get", lambda *a, **k: (_ for _ in ()).throw(httpx.ConnectError("Connection refused")))
+    ping_model_service_sync()  # Should not raise
+
+
+def test_http_model_cold_boot_retry_success(monkeypatch):
+    import httpx
+    import time
+    from app.config import settings
+    from app.model_client import HttpModel
+
+    monkeypatch.setattr(settings, "model_retries", 2)
+    monkeypatch.setattr(settings, "model_cold_boot_retries", 3)
+    monkeypatch.setattr(time, "sleep", lambda s: None)  # speed up test
+
+    calls = [0]
+    def fake_post(*a, **k):
+        calls[0] += 1
+        if calls[0] == 1:
+            return httpx.Response(503, json={"detail": "Service Unavailable - Booting"})
+        return httpx.Response(200, json={"disclaimer": "ok", "compliance_table": []})
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    res = HttpModel().call("test cr text")
+    assert res == {"disclaimer": "ok", "compliance_table": []}
+    assert calls[0] == 2
+

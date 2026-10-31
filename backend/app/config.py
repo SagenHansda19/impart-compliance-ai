@@ -34,6 +34,7 @@ class Settings:
     model_mode: str = os.getenv("MODEL_MODE", "http")
     model_timeout_s: float = float(os.getenv("MODEL_TIMEOUT_S", "180"))
     model_retries: int = int(os.getenv("MODEL_RETRIES", "2"))  # http mode only, transient errors only
+    model_cold_boot_retries: int = int(os.getenv("MODEL_COLD_BOOT_RETRIES", "12"))  # retry limit for 502/503 Render cold start
     # http mode
     model_url: str = os.getenv("MODEL_URL", "http://localhost:8001/api/evaluate")
     model_request_field: str = os.getenv("MODEL_REQUEST_FIELD", "cr_text")  # JSON key that carries the CR text

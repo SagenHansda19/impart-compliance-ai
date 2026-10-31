@@ -8,13 +8,55 @@
 All adapters return the model's JSON as a dict, or raise ModelCallError(code, message).
 """
 import json
+import logging
 import shlex
 import subprocess
 import time
+from urllib.parse import urlparse
 
 import httpx
 
 from .config import settings
+
+logger = logging.getLogger(__name__)
+
+
+def get_model_health_url() -> str:
+    """Derive health/root URL of the model service from settings.model_url."""
+    url = (settings.model_url or "").strip()
+    if not url:
+        return ""
+    if "/api/evaluate" in url:
+        return url.replace("/api/evaluate", "/health")
+    if url.endswith("/evaluate"):
+        return url.replace("/evaluate", "/health")
+    parsed = urlparse(url)
+    return f"{parsed.scheme}://{parsed.netloc}/health"
+
+
+def ping_model_service_sync() -> None:
+    """Fire-and-forget synchronous ping to trigger the model service container wake-up."""
+    if settings.model_mode != "http":
+        return
+    health_url = get_model_health_url()
+    if not health_url:
+        return
+    try:
+        logger.info("Waking up model service at %s", health_url)
+        headers = {"Authorization": f"Bearer {settings.model_api_key}"} if settings.model_api_key else {}
+        with httpx.Client(timeout=5.0) as client:
+            client.get(health_url, headers=headers)
+    except Exception as e:  # noqa: BLE001
+        logger.debug("Model warmup ping completed with status/transient response: %s", e)
+
+
+async def wake_model_service() -> None:
+    """Non-blocking background ping used on startup lifespan."""
+    if settings.model_mode != "http":
+        return
+    import asyncio
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, ping_model_service_sync)
 
 
 class ModelCallError(Exception):
@@ -50,7 +92,15 @@ class HttpModel:
     def call(self, cr_text: str) -> dict:
         headers = {"Authorization": f"Bearer {settings.model_api_key}"} if settings.model_api_key else {}
         last = "unknown"
-        for attempt in range(settings.model_retries + 1):
+        code = "model_unavailable"
+
+        # Cold boot on Render free tier takes 40-60s.
+        # If model_retries is 0 (e.g. in unit tests), max_retries is 0.
+        # Otherwise, allow up to model_cold_boot_retries to bridge the container wake-up window.
+        max_retries = max(settings.model_retries, settings.model_cold_boot_retries) if settings.model_retries > 0 else 0
+
+        for attempt in range(max_retries + 1):
+            is_cold_boot = False
             try:
                 r = httpx.post(settings.model_url, json={settings.model_request_field: cr_text},
                                headers=headers, timeout=settings.model_timeout_s)
@@ -58,8 +108,12 @@ class HttpModel:
                 last, code = "timed out", "model_timeout"
             except httpx.TransportError as e:
                 last, code = f"connection failed: {type(e).__name__}", "model_unreachable"
+                is_cold_boot = True
             else:
-                if r.status_code >= 500:
+                if r.status_code in (502, 503, 504):
+                    last, code = f"model service returned {r.status_code}{_detail(r)}", "model_unavailable"
+                    is_cold_boot = True
+                elif r.status_code >= 500:
                     last, code = f"model service returned {r.status_code}{_detail(r)}", "model_unavailable"
                 elif r.status_code >= 400:
                     raise ModelCallError("model_rejected", f"Model service rejected the request ({r.status_code}){_detail(r)}.")
@@ -68,8 +122,19 @@ class HttpModel:
                         return r.json()
                     except ValueError:
                         raise ModelCallError("model_bad_response", "Model service did not return JSON.") from None
-            if attempt < settings.model_retries:
-                time.sleep(min(2 ** attempt, 5))
+
+            if attempt < max_retries:
+                if is_cold_boot:
+                    sleep_s = 4.0 if attempt > 2 else 2.5
+                    logger.info("Model service is waking up (%s). Retrying in %.1fs (attempt %d/%d)...",
+                                last, sleep_s, attempt + 1, max_retries)
+                    time.sleep(sleep_s)
+                    continue
+                if attempt < settings.model_retries:
+                    time.sleep(min(2 ** attempt, 5))
+                    continue
+            break
+
         raise ModelCallError(code, f"Model call failed after retries: {last}")
 
 
