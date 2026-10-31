@@ -85,8 +85,8 @@
     \small{\item{
      \textbf{Languages}{: Java, Python, C++, SQL, JavaScript, TypeScript} \\ \vspace{1pt}
      \textbf{Frameworks \& Libraries}{: Spring Boot, FastAPI, Spring Security, React, Vite, Spring Data JPA, LangChain4j} \\ \vspace{1pt}
-     \textbf{Databases \& Search}{: PostgreSQL, pgvector (HNSW), Supabase, Redis, Compound GIN (btree\_gin, pg\_trgm)} \\ \vspace{1pt}
-     \textbf{AI, RAG \& Systems}{: Hybrid RAG (Dense + Lexical RRF), Semantic Caching, Guardrails, Groq, Gemini, Prompt Engineering} \\ \vspace{1pt}
+     \textbf{Databases \& Vector Search}{: PostgreSQL, pgvector (HNSW), Supabase, Redis, Compound GIN (btree\_gin, pg\_trgm)} \\ \vspace{1pt}
+     \textbf{AI \& RAG Systems}{: Hybrid RAG (Dense + Lexical RRF), Semantic Caching, Guardrails, Groq, Gemini, Prompt Engineering} \\ \vspace{1pt}
      \textbf{Tools \& DevOps}{: Docker, Git, Linux, Grafana K6, Postman, Maven, JWT, Render, Vercel} \\ \vspace{1pt}
      \textbf{Core Concepts}{: Data Structures \& Algorithms, Concurrency, Distributed Systems, System Architecture}
     }}
@@ -101,14 +101,13 @@
           {\textbf{IMPART AI} \href{https://impart-compliance-ai.vercel.app/}{\underline{\small{[Live Demo]}}} $|$ \href{https://github.com/SagenHansda19/impart-compliance-ai}{\underline{\small{[GitHub]}}} $|$ \emph{Python, FastAPI, PostgreSQL, pgvector, React, Groq}}{Sep 2026 -- Present}
           \resumeItemListStart
             \resumeItem{Architected a multi-regime financial compliance RAG platform evaluating trade change requests across 5 global frameworks (EMIR, UK EMIR, ASIC, MAS, HKMA) against 8,200+ vector-embedded regulatory chunks.}
-            \resumeItem{Slashed database retrieval from \textbf{100+ seconds to milliseconds}: tuned pgvector HNSW search depth (\textbf{ef\_search=40}, 52.9ms $\to$ 1.18ms, \textbf{44x speedup}), built composite GIN trigram indexes (\textbf{17.7x}), and pooled connections (<0.05ms).}
-            \resumeItem{Designed a 2-tier \textbf{Semantic Cache} (SHA-256 + dense cosine $\ge$0.96 with token guards) dropping repeat CR latency to \textbf{<5ms (700x speedup)} and saving $\sim$2,500 LLM tokens per evaluation.}
-            \resumeItem{Engineered a 4-tier \textbf{Post-RAG Guardrail Engine} enforcing verbatim quote verification against PostgreSQL, preventing cross-regime hallucination bleed, and scoring grounding confidence (100\% test suite accuracy across 40/40 benchmark rules).}
-            \resumeItem{Built proactive cascading microservice warmup and an adaptive 60s cold-start retry loop, eliminating 503/502/429 cloud container hibernation failures across decoupled serverless and container instances.}
+            \resumeItem{Engineered database optimizations: tuned pgvector HNSW indexing (\texttt{ef\_search=40}) dropping vector latency from 52.9ms to 1.18ms (\textbf{44x speedup}), added compound GIN trigram indexes (\textbf{17.7x speedup}), and pooled connections ($<$0.05ms).}
+            \resumeItem{Designed a 2-tier \textbf{Semantic Cache} (SHA-256 + dense cosine $\ge$0.90 with token guardrails) dropping repeat query latency to \textbf{$<$5ms (700x speedup)}, backed by a 3-LLM automated failover pool slashing test suite latency by \textbf{75\%} (550s $\to$ 134s).}
+            \resumeItem{Engineered a 4-tier \textbf{Post-RAG Guardrail Engine} enforcing verbatim quote verification and zero cross-regime bleed (\textbf{100\% accuracy across 40/40 benchmark checks}), powering an institutional Stripe-grade \textbf{Risk Command Center} with real-time conflict heatmaps.}
           \resumeItemListEnd
 
       \resumeProjectHeading
-          {\textbf{StockVerse} \href{https://stock-portfolio-manager-gt6i.onrender.com/}{\underline{\small{[Live Demo]}}} $|$ \emph{Spring Boot, React, PostgreSQL, Redis, Gemini API, Grafana K6}}{Dec 2025 -- Sep 2026}
+          {\textbf{StockVerse} \href{https://stock-portfolio-manager-gt6i.onrender.com/}{\underline{\small{[Live Demo]}}} $|$ \emph{Spring Boot, React, PostgreSQL, Redis, Gemini API, Grafana K6}}{Mar 2026 -- Jul 2026}
           \resumeItemListStart
             \resumeItem{Engineered a high-concurrency transactional trading engine using JPA \textbf{@Version} optimistic locking to prevent race conditions and protect financial ledgers under concurrent market orders.}
             \resumeItem{Implemented an event-driven multi-tier caching lifecycle using \textbf{Redis} (\textbf{@Cacheable}, \textbf{@CacheEvict}), accelerating AI portfolio analysis delivery to \textbf{sub-35ms} and bypassing external rate limits.}
@@ -147,13 +146,13 @@
     \resumeSubheading
       {Nand Prasad High School}{West Bengal, India}
       {Higher Secondary Education (PCM) --- 91\% $|$ Secondary Education --- 91\%}{2017 -- 2021}
-  \resumeSubHeadingListEnd
+  \resumeSubHeadingListEnd              
 
 % ---------- INTERESTS ----------
 \section{Interests}
  \begin{itemize}[leftmargin=0.15in, label={}]
     \small{\item{
-     Competitive Programming, High-Performance Backend Systems, Distributed Systems, Fitness.
+     Competitive Programming, High-Performance Systems, Fitness.
     }}
  \end{itemize}
 

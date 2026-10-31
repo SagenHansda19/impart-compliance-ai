@@ -13,3 +13,6 @@ backend/.llm_cache/
 eval_results.json
 *.db
 .~lock.*
+.agents/
+skills-lock.json
+resume.tex
